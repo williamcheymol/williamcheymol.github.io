@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Finance Projects — William Cheymol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="icon" type="image/png" href="../assets/images/Avatar.png"/>
+  <style>
+    .page-hero {
+      padding: 120px 0 60px;
+      position: relative;
+    }
+    .page-hero .back {
+      font-family: var(--font-mono); font-size: 13px;
+      color: var(--muted); text-decoration: none; letter-spacing: 0.1em;
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-bottom: 44px; transition: color 0.2s;
+    }
+    .page-hero .back:hover { color: var(--text); }
+    .page-hero h1 {
+      font-size: clamp(44px, 7vw, 80px);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .page-hero .subtitle {
+      font-size: 17px; color: var(--muted2); max-width: 580px; line-height: 1.85;
+    }
+
+    /* Projects grid */
+    .projects-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .project-card {
+      padding: 36px; border: 1px solid var(--border); border-radius: 2px;
+      background: transparent; transition: background 0.2s, border-color 0.2s;
+      position: relative;
+    }
+    .project-card:hover { background: var(--bg2); border-color: #333; }
+    .project-card.coming-soon { opacity: 0.4; pointer-events: none; }
+
+    .project-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 18px;
+    }
+    .project-num {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--accent); letter-spacing: 0.12em;
+    }
+    .project-status {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 0.1em; padding: 4px 12px; border-radius: 2px;
+    }
+    .status-wip  { color: #ffd54f; border: 1px solid rgba(255,213,79,0.25); }
+    .status-soon { color: var(--muted); border: 1px solid var(--border); }
+    .status-done { color: var(--accent); border: 1px solid rgba(0,230,118,0.25); }
+
+    .project-card h3 {
+      font-size: 19px; font-weight: 600; color: var(--text); margin-bottom: 12px;
+    }
+    .project-card p {
+      font-size: 15px; color: var(--muted2); line-height: 1.8; margin-bottom: 22px;
+    }
+
+    /* Focus areas */
+    .focus-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    .focus-item {
+      padding: 32px; border: 1px solid var(--border); border-radius: 2px;
+    }
+    .focus-item .icon {
+      font-family: var(--font-mono); font-size: 24px;
+      color: var(--accent); margin-bottom: 16px; display: block;
+    }
+    .focus-item h4 {
+      font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 10px;
+    }
+    .focus-item p {
+      font-size: 14px; color: var(--muted2); line-height: 1.75;
+    }
+
+    @media (max-width: 900px) {
+      .page-hero { padding: 100px 0 40px; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .focus-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <nav>
+    <a href="../index.html" class="logo">cheymol<span>.io</span></a>
+    <div class="links">
+      <a href="../index.html">profile</a>
+      <a href="finance.html" class="active">finance</a>
+      <a href="tech.html">tech</a>
+      <a href="events.html">events</a>
+      <a href="music.html">music</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero fade-up">
+      <div class="page-hero-inner">
+        <a href="../index.html" class="back">← back</a>
+        <h1>Finance<br>Projects</h1>
+        <p class="subtitle">
+          Quantitative models, derivatives pricing tools and financial analysis — built to understand markets from the inside out.
+        </p>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top: 0;">
+
+      <!-- Focus areas -->
+      <div class="section-label"><span>AREAS OF FOCUS</span></div>
+      <div class="focus-grid" style="margin-bottom: 64px;">
+        <div class="focus-item">
+          <span class="icon">∂</span>
+          <h4>Derivatives Pricing</h4>
+          <p>Options, exotics, structured products. Black-Scholes, local vol, stochastic models.</p>
+        </div>
+        <div class="focus-item">
+          <span class="icon">∑</span>
+          <h4>Quantitative Methods</h4>
+          <p>Monte Carlo simulation, calibration, risk metrics, statistical modeling.</p>
+        </div>
+        <div class="focus-item">
+          <span class="icon">≈</span>
+          <h4>Fixed Income</h4>
+          <p>Yield curve modeling, bond pricing, interest rate derivatives and DV01 analysis.</p>
+        </div>
+      </div>
+
+      <!-- Projects -->
+      <div class="section-label"><span>PROJECTS</span></div>
+      <div class="projects-grid">
+
+        <div class="project-card">
+          <div class="project-top">
+            <span class="project-num">01</span>
+            <span class="project-status status-wip">IN PROGRESS</span>
+          </div>
+          <h3>Option Pricing & Hedging Simulation</h3>
+          <p>
+            European option pricing under Geometric Brownian Motion via Monte Carlo, with repo rate modeling for realistic forward pricing. Implemented and compared Delta vs Delta-Gamma hedging on equity and FX underlyings. Analyzed hedging error distribution and transaction cost impact on P&amp;L. Interactive Jupyter widgets for Greeks sensitivity (Δ, Γ, ν, θ).
+          </p>
+          <div class="tags">
+            <span class="tag">Python</span>
+            <span class="tag">Monte Carlo</span>
+            <span class="tag">Delta Hedging</span>
+            <span class="tag">Greeks</span>
+            <span class="tag">Jupyter</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-top">
+            <span class="project-num">02</span>
+            <span class="project-status status-wip">IN PROGRESS</span>
+          </div>
+          <h3>Black-Scholes PDE Solver</h3>
+          <p>
+            Numerical resolution of the Black-Scholes PDE on a (S, t) grid using the Crank-Nicolson finite difference scheme. Tridiagonal system solved via the Thomas algorithm for efficient computation. Results benchmarked against the closed-form BS formula and explicit finite difference scheme.
+          </p>
+          <div class="tags">
+            <span class="tag">C++</span>
+            <span class="tag">PDE</span>
+            <span class="tag">Crank-Nicolson</span>
+            <span class="tag">Finite Difference</span>
+          </div>
+        </div>
+
+        <div class="project-card coming-soon">
+          <div class="project-top">
+            <span class="project-num">03</span>
+            <span class="project-status status-soon">SOON</span>
+          </div>
+          <h3>Systematic Backtesting Framework</h3>
+          <p>
+            Event-driven backtesting engine for quantitative strategies. Performance metrics, transaction cost modeling and drawdown analysis.
+          </p>
+          <div class="tags">
+            <span class="tag">Python</span>
+            <span class="tag">Backtesting</span>
+            <span class="tag">Risk Metrics</span>
+          </div>
+        </div>
+
+        <div class="project-card coming-soon">
+          <div class="project-top">
+            <span class="project-num">04</span>
+            <span class="project-status status-soon">SOON</span>
+          </div>
+          <h3>Vol Surface Analysis</h3>
+          <p>
+            Implied volatility surface construction from options market data.
+            Smile dynamics, SABR model calibration and surface interpolation.
+          </p>
+          <div class="tags">
+            <span class="tag">Volatility</span>
+            <span class="tag">SABR</span>
+            <span class="tag">Calibration</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CTA -->
+      <div style="margin-top: 56px; padding: 32px; border: 1px solid var(--border); border-radius: 2px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <p style="font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">INTERESTED IN MY WORK?</p>
+          <p style="font-size: 14px; color: var(--muted2);">I'm looking for a 6-month Front Office internship — starting June 2026.</p>
+        </div>
+        <a href="https://www.linkedin.com/in/william-cheymol/" class="btn btn-primary" style="white-space: nowrap;">Get in touch</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2026 William Cheymol</span>
+    <a href="https://github.com/williamcheymol" style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); text-decoration: none; letter-spacing: 0.1em;">github.com/williamcheymol</a>
+  </footer>
+</body>
+<

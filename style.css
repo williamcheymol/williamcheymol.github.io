@@ -1,0 +1,267 @@
+/* =============================================
+   William Cheymol — Portfolio Design System
+   ============================================= */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #080808;
+  --bg2:     #111111;
+  --bg3:     #1a1a1a;
+  --border:  #222222;
+  --text:    #e8e8e8;
+  --muted:   #898989;
+  --muted2:  #acacac;
+  --accent:  #00e676;
+  --accent2: #00b0ff;
+  --accent3: #ff6b6b;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Animated gradient background */
+@keyframes gradientShift {
+  0%   { background-position: 0% 0%; }
+  25%  { background-position: 100% 30%; }
+  50%  { background-position: 60% 100%; }
+  75%  { background-position: 20% 60%; }
+  100% { background-position: 0% 0%; }
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(0, 230, 118, 0.055) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(0, 200, 100, 0.04) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, rgba(0, 180, 80, 0.02) 0%, transparent 70%);
+  background-size: 200% 200%;
+  animation: gradientShift 18s ease-in-out infinite;
+}
+
+/* Grid background */
+.grid-bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: 0.03;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ---- NAVIGATION ---- */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0 80px;
+  height: 64px;
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(8,8,8,0.88);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(14px);
+}
+
+nav .logo {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  text-decoration: none;
+}
+nav .logo span { color: var(--muted2); }
+
+nav .links {
+  display: flex; gap: 36px;
+}
+
+nav .links a {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted2);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  transition: color 0.2s;
+  padding-bottom: 3px;
+  border-bottom: 1px solid transparent;
+}
+nav .links a:hover,
+nav .links a.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+/* ---- LAYOUT ---- */
+main {
+  position: relative; z-index: 1;
+  padding-top: 64px;
+}
+
+/* Shared inner width — used by hero + container to always align */
+.container,
+.hero-inner,
+.page-hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 80px;
+  padding-right: 80px;
+  width: 100%;
+}
+
+.container {
+  padding-top: 88px;
+  padding-bottom: 88px;
+}
+
+.section-label {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 52px;
+}
+.section-label span {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  white-space: nowrap;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ---- CARDS ---- */
+.card {
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: transparent;
+  transition: background 0.2s, border-color 0.2s;
+}
+.card:hover {
+  background: var(--bg2);
+  border-color: #333;
+}
+
+.card-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  margin-bottom: 14px;
+}
+
+.card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.card p {
+  font-size: 15px;
+  color: var(--muted2);
+  line-height: 1.8;
+}
+
+/* ---- TAGS ---- */
+.tags {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 20px;
+}
+.tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  border: 1px solid rgba(0,230,118,0.2);
+  padding: 4px 12px;
+  border-radius: 2px;
+  letter-spacing: 0.06em;
+}
+.tag.blue {
+  color: var(--accent2);
+  border-color: rgba(0,176,255,0.2);
+}
+.tag.red {
+  color: var(--accent3);
+  border-color: rgba(255,107,107,0.2);
+}
+
+/* ---- BUTTONS ---- */
+.btn {
+  display: inline-block;
+  padding: 13px 30px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  border-radius: 2px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s, background 0.2s;
+  border: none;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+}
+.btn-primary:hover { opacity: 0.85; }
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { border-color: #444; }
+
+/* ---- FOOTER ---- */
+footer {
+  position: relative; z-index: 1;
+  padding: 32px 80px;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+footer span, footer a {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+/* ---- ANIMATIONS ---- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.fade-up { animation: fadeUp 0.7s ease forwards; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 900px) {
+  nav { padding: 0 28px; }
+  nav .links { gap: 22px; }
+  nav .links a { font-size: 12px; }
+  .container,
+  .hero-inner,
+  .page-hero-inner { padding-left: 28px; padding-right: 28px; }
+  .container { padding-top: 60px; padding-bottom: 60px; }
+  footer { padding: 24px 28px; flex-direction: column; gap: 8px; }
+}

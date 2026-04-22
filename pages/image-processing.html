@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Image Processing in C · William Cheymol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="icon" type="image/png" href="../assets/images/Avatar.png"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ]
+    });"></script>
+  <style>
+    .page-hero {
+      padding: 120px 0 60px; position: relative;
+    }
+    .page-hero .back {
+      font-family: var(--font-mono); font-size: 13px;
+      color: var(--muted); text-decoration: none; letter-spacing: 0.1em;
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-bottom: 44px; transition: color 0.2s;
+    }
+    .page-hero .back:hover { color: var(--text); }
+    .page-hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .page-hero .subtitle {
+      font-size: 17px; color: var(--muted2); max-width: 580px; line-height: 1.85;
+    }
+
+    /* Meta badges */
+    .meta-row {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .meta-badge {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+      padding: 5px 14px; border-radius: 2px;
+    }
+    .meta-grade { color: #00e676; border: 1px solid rgba(0,230,118,0.25); }
+    .meta-year  { color: var(--muted2); border: 1px solid var(--border); }
+    .meta-field { color: var(--accent2); border: 1px solid rgba(0,176,255,0.25); }
+
+    /* Section prose */
+    .prose p {
+      font-size: 16px; color: var(--muted2); line-height: 1.9; margin-bottom: 18px;
+      max-width: 780px;
+    }
+    .prose p strong { color: var(--text); font-weight: 500; }
+
+    /* Two-col layout */
+    .two-col {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;
+    }
+    .two-col-wide {
+      display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center;
+    }
+
+    /* Concept boxes */
+    .concept-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+      margin-bottom: 48px;
+    }
+    .concept-grid-3 {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+      margin-bottom: 48px;
+    }
+    .concept-box {
+      padding: 24px; border: 1px solid var(--border); border-radius: 2px;
+    }
+    .concept-box .concept-key {
+      font-family: var(--font-mono); font-size: 11px; color: var(--accent);
+      letter-spacing: 0.12em; margin-bottom: 10px;
+    }
+    .concept-box .concept-val {
+      font-size: 13px; color: var(--muted2); line-height: 1.75;
+    }
+    .concept-box .concept-val strong { color: var(--text); font-weight: 500; }
+
+    /* Code block */
+    .code-block {
+      background: #0d0d0d; border: 1px solid var(--border); border-radius: 2px;
+      padding: 28px 32px; overflow-x: auto; margin-bottom: 0;
+    }
+    .code-block pre {
+      font-family: var(--font-mono); font-size: 13px;
+      color: #cdd6f4; line-height: 1.7; margin: 0;
+    }
+    .code-kw  { color: #cba6f7; }
+    .code-fn  { color: #89b4fa; }
+    .code-str { color: #a6e3a1; }
+    .code-cmt { color: #585b70; font-style: italic; }
+    .code-num { color: #fab387; }
+    .code-type { color: #94e2d5; }
+
+    /* Formula box */
+    .formula-box {
+      border: 1px solid rgba(0,230,118,0.15); border-radius: 2px;
+      padding: 28px 32px; background: rgba(0,230,118,0.02);
+      margin-bottom: 0;
+    }
+    .formula-box .formula-label {
+      font-family: var(--font-mono); font-size: 10px; color: var(--accent);
+      letter-spacing: 0.12em; margin-bottom: 16px;
+    }
+    .formula-box .formula-desc {
+      font-size: 13px; color: var(--muted); line-height: 1.75; margin-top: 16px;
+    }
+
+    /* Bug banner */
+    .bug-banner {
+      border: 1px solid rgba(255, 107, 107, 0.2); border-radius: 2px;
+      background: rgba(255, 107, 107, 0.03);
+      padding: 28px 32px;
+    }
+    .bug-banner .bug-label {
+      font-family: var(--font-mono); font-size: 10px; color: #ff6b6b;
+      letter-spacing: 0.12em; margin-bottom: 12px;
+    }
+    .bug-banner p {
+      font-size: 15px; color: var(--muted2); line-height: 1.8; margin-bottom: 12px;
+    }
+    .bug-banner p:last-child { margin-bottom: 0; }
+    .bug-banner p strong { color: var(--text); font-weight: 500; }
+
+    /* Steps */
+    .steps {
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .step {
+      display: flex; gap: 20px; padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step-num {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--accent); letter-spacing: 0.12em;
+      padding-top: 2px; flex-shrink: 0; min-width: 32px;
+    }
+    .step-content h4 {
+      font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px;
+    }
+    .step-content p {
+      font-size: 14px; color: var(--muted2); line-height: 1.75;
+    }
+    .step-content p strong { color: var(--text); font-weight: 500; }
+
+    /* Module cards */
+    .module-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+      margin-bottom: 48px;
+    }
+    .module-card {
+      padding: 28px 28px; border: 1px solid var(--border); border-radius: 2px;
+    }
+    .module-card .module-file {
+      font-family: var(--font-mono); font-size: 11px; color: var(--accent);
+      letter-spacing: 0.12em; margin-bottom: 10px;
+    }
+    .module-card h4 {
+      font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 8px;
+    }
+    .module-card p {
+      font-size: 13px; color: var(--muted2); line-height: 1.75;
+    }
+
+    /* Image display */
+    .img-frame {
+      border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; background: #111;
+    }
+    .img-frame img {
+      width: 100%; display: block;
+    }
+    .img-caption {
+      font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+      letter-spacing: 0.08em; margin-top: 10px; text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .page-hero { padding: 100px 0 40px; }
+      .two-col, .two-col-wide { grid-template-columns: 1fr; }
+      .concept-grid { grid-template-columns: 1fr 1fr; }
+      .concept-grid-3 { grid-template-columns: 1fr; }
+      .module-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <nav>
+    <a href="../index.html" class="logo">cheymol<span>.io</span></a>
+    <div class="links">
+      <a href="../index.html">profile</a>
+      <a href="finance.html">finance</a>
+      <a href="tech.html" class="active">tech</a>
+      <a href="events.html">events</a>
+      <a href="music.html">music</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero fade-up">
+      <div class="page-hero-inner">
+        <a href="tech.html" class="back">← tech projects</a>
+        <div class="meta-row">
+          <span class="meta-badge meta-year">ENSIIE · 2024 – 2025</span>
+          <span class="meta-badge meta-field">SYSTEMS PROGRAMMING</span>
+          <span class="meta-badge meta-field">IMAGE PROCESSING</span>
+        </div>
+        <h1>Image Processing<br>in C</h1>
+        <p class="subtitle">
+          A pixel-level image processing library written in C — handling PPM and PGM formats with LUT-based filters, resampling, and binary I/O.
+        </p>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top: 0;">
+
+      <!-- Context -->
+      <div class="section-label"><span>THE PROBLEM</span></div>
+      <div class="two-col-wide" style="margin-bottom: 64px;">
+        <div class="prose">
+          <p>
+            The objective was to build a complete image processing library from scratch in C — no external libraries, no shortcuts. Every pixel operation had to be written by hand, from file parsing to filter application.
+          </p>
+          <p>
+            The project targets two binary image formats : <strong>PPM</strong> (Portable Pixmap, color) and <strong>PGM</strong> (Portable Graymap, grayscale). Both store raw pixel data in binary after a plain-text header, which means the parser has to handle the byte stream precisely — wrong indexing corrupts the entire image.
+          </p>
+          <p>
+            The library covers the full pipeline : <strong>reading and writing files</strong>, manipulating pixels through abstracted structures, applying photometric operations, and resampling images at arbitrary resolutions using two distinct interpolation methods.
+          </p>
+        </div>
+        <div>
+          <div class="steps">
+            <div class="step">
+              <span class="step-num">PPM</span>
+              <div class="step-content">
+                <h4>Color images</h4>
+                <p>Each pixel stores three bytes: R, G, B components. 3 × width × height bytes of binary data.</p>
+              </div>
+            </div>
+            <div class="step">
+              <span class="step-num">PGM</span>
+              <div class="step-content">
+                <h4>Grayscale images</h4>
+                <p>Each pixel is a single intensity byte. width × height bytes of binary data.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LUT -->
+      <div class="section-label"><span>LUT-BASED FILTERS</span></div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div>
+          <div class="prose">
+            <p>
+              A <strong>Look-Up Table</strong> is a 256-entry array that maps each possible intensity value (0–255) to a new one. Instead of computing a formula per pixel, the transformation is pre-computed once and applied in O(1) per channel.
+            </p>
+            <p>
+              The same <code style="font-family: var(--font-mono); font-size: 13px; color: var(--accent);">apply_lut()</code> function handles both PPM and PGM: for color images it iterates over all three channels; for grayscale, just the intensity. This uniform interface means any filter reduces to filling a table.
+            </p>
+          </div>
+          <div class="concept-grid-3" style="margin-top: 24px;">
+            <div class="concept-box">
+              <div class="concept-key">INVERSION</div>
+              <div class="concept-val"><code style="font-family: var(--font-mono); font-size: 12px; color: var(--text);">table[i] = 255 - i</code> — negates all intensities.</div>
+            </div>
+            <div class="concept-box">
+              <div class="concept-key">NORMALIZE</div>
+              <div class="concept-val">Stretches histogram to full range: maps $[\min, \max] \to [0, 255]$.</div>
+            </div>
+            <div class="concept-box">
+              <div class="concept-key">LEVELS</div>
+              <div class="concept-val">Staircase quantization: maps intensities to $n$ discrete levels.</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:#0d0d0d;border:1px solid var(--border);border-radius:2px;padding:22px 20px 16px;">
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:14px;">TRANSFER CURVES — f(input) = output</div>
+          <svg viewBox="0 0 340 218" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
+            <!-- grid -->
+            <line x1="40" y1="10" x2="40" y2="200" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="134" y1="10" x2="134" y2="200" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="227" y1="10" x2="227" y2="200" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="320" y1="10" x2="320" y2="200" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="40" y1="10" x2="320" y2="10" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="40" y1="73" x2="320" y2="73" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="40" y1="137" x2="320" y2="137" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="40" y1="200" x2="320" y2="200" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <!-- axes -->
+            <line x1="40" y1="200" x2="320" y2="200" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+            <line x1="40" y1="10" x2="40" y2="200" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+            <!-- tick labels -->
+            <text x="40" y="213" fill="#404040" font-family="monospace" font-size="8" text-anchor="middle">0</text>
+            <text x="134" y="213" fill="#404040" font-family="monospace" font-size="8" text-anchor="middle">85</text>
+            <text x="227" y="213" fill="#404040" font-family="monospace" font-size="8" text-anchor="middle">170</text>
+            <text x="320" y="213" fill="#404040" font-family="monospace" font-size="8" text-anchor="middle">255</text>
+            <text x="32" y="203" fill="#404040" font-family="monospace" font-size="8" text-anchor="end">0</text>
+            <text x="32" y="13" fill="#404040" font-family="monospace" font-size="8" text-anchor="end">255</text>
+            <!-- identity dashed -->
+            <line x1="40" y1="200" x2="320" y2="10" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-dasharray="4,4"/>
+            <!-- inversion: (0,255)→(40,10)  (255,0)→(320,200) -->
+            <line x1="40" y1="10" x2="320" y2="200" stroke="#ff6b6b" stroke-width="2"/>
+            <!-- brighten ×2: clamps at x=128 → toX(128)=40+(128/255)*280=40+140.5=181, toY(255)=10 -->
+            <polyline points="40,200 181,10 320,10" fill="none" stroke="#00e676" stroke-width="2" stroke-linejoin="round"/>
+            <!-- levels n=4: step=64 -->
+            <!-- toX(v)=40+v*(280/255)=40+v*1.098 toY(v)=200-v*(190/255)=200-v*0.745 -->
+            <!-- 0-63→0:    toX(0)=40 toX(63)=109   toY(0)=200 -->
+            <!-- 64-127→64: toX(64)=110 toX(127)=179 toY(64)=200-47.7=152 -->
+            <!-- 128-191→128: toX(128)=181 toX(191)=250 toY(128)=200-95.4=105 -->
+            <!-- 192-255→192: toX(192)=251 toX(255)=320 toY(192)=200-143=57 -->
+            <polyline points="40,200 109,200 110,152 179,152 181,105 250,105 251,57 320,57" fill="none" stroke="#00b0ff" stroke-width="2" stroke-linejoin="bevel"/>
+          </svg>
+          <!-- legend -->
+          <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;">
+            <div style="display:flex;align-items:center;gap:7px;">
+              <svg width="18" height="10" style="flex-shrink:0"><line x1="0" y1="5" x2="18" y2="5" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="4,3"/></svg>
+              <span style="font-family:var(--font-mono);font-size:9px;color:#484848;letter-spacing:0.08em;">IDENTITY</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:7px;">
+              <svg width="18" height="10" style="flex-shrink:0"><line x1="0" y1="5" x2="18" y2="5" stroke="#ff6b6b" stroke-width="2"/></svg>
+              <span style="font-family:var(--font-mono);font-size:9px;color:#ff6b6b;letter-spacing:0.08em;">INVERSION</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:7px;">
+              <svg width="18" height="10" style="flex-shrink:0"><line x1="0" y1="5" x2="18" y2="5" stroke="#00e676" stroke-width="2"/></svg>
+              <span style="font-family:var(--font-mono);font-size:9px;color:#00e676;letter-spacing:0.08em;">BRIGHTEN ×2</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:7px;">
+              <svg width="18" height="10" style="flex-shrink:0"><line x1="0" y1="5" x2="18" y2="5" stroke="#00b0ff" stroke-width="2"/></svg>
+              <span style="font-family:var(--font-mono);font-size:9px;color:#00b0ff;letter-spacing:0.08em;">LEVELS (n=4)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LUT results — color row -->
+      <div style="margin-bottom:16px;">
+        <p style="font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:12px;">LUTS APPLIED ON COLOR</p>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_color.png" alt="Original color"/></div>
+            <p class="img-caption">ORIGINAL</p>
+          </div>
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_color_inverted.png" alt="Inverted"/></div>
+            <p class="img-caption">INVERTED</p>
+          </div>
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_color_bright.png" alt="Brightened"/></div>
+            <p class="img-caption">BRIGHTENED ×1.6</p>
+          </div>
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_color_levels.png" alt="Levels"/></div>
+            <p class="img-caption">LEVELS n=4</p>
+          </div>
+        </div>
+      </div>
+      <!-- LUT results — grayscale row -->
+      <div style="margin-bottom:64px;">
+        <p style="font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:12px;">LUTS APPLIED ON GRAYSCALE</p>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_gray.png" alt="Gray original"/></div>
+            <p class="img-caption">ORIGINAL</p>
+          </div>
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_gray_inverted.png" alt="Gray inverted"/></div>
+            <p class="img-caption">INVERTED</p>
+          </div>
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_gray_normalized.png" alt="Normalized"/></div>
+            <p class="img-caption">NORMALIZED</p>
+          </div>
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_gray_levels.png" alt="Levels"/></div>
+            <p class="img-caption">LEVELS n=4</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pixel operations -->
+      <div class="section-label"><span>OTHER PIXEL OPERATIONS</span></div>
+      <div style="margin-bottom:16px;">
+        <p style="font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:12px;">ARITHMETIC — brighten, difference, melt</p>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:32px;">
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_gray.png" alt="Original"/></div>
+            <p class="img-caption">ORIGINAL</p>
+          </div>
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_gray_bright.png" alt="Brightened"/></div>
+            <p class="img-caption">BRIGHTENED</p>
+          </div>
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_diff_visible.png" alt="Diff"/></div>
+            <p class="img-caption">DIFFERENCE</p>
+          </div>
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_melt.png" alt="Melt"/></div>
+            <p class="img-caption">MELT</p>
+          </div>
+        </div>
+        <p style="font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:12px;">CHANNEL SPLIT → GRAYSCALE CONVERSION</p>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:64px;">
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_color.png" alt="Color"/></div>
+            <p class="img-caption">ORIGINAL (PPM)</p>
+          </div>
+          <div>
+            <div class="img-frame" style="border-color:rgba(255,80,80,0.3);"><img src="../assets/imageprocessing/lenna_channel_r.png" alt="R channel"/></div>
+            <p class="img-caption" style="color:rgba(255,100,100,0.7);">R CHANNEL</p>
+          </div>
+          <div>
+            <div class="img-frame" style="border-color:rgba(80,220,120,0.3);"><img src="../assets/imageprocessing/lenna_channel_g.png" alt="G channel"/></div>
+            <p class="img-caption" style="color:rgba(100,220,100,0.7);">G CHANNEL</p>
+          </div>
+          <div>
+            <div class="img-frame" style="border-color:rgba(80,140,255,0.3);"><img src="../assets/imageprocessing/lenna_channel_b.png" alt="B channel"/></div>
+            <p class="img-caption" style="color:rgba(100,150,255,0.7);">B CHANNEL</p>
+          </div>
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_converted_gray.png" alt="Grayscale"/></div>
+            <p class="img-caption">GRAYSCALE RECONSTITUED (PGM)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resampling -->
+      <div class="section-label"><span>RESAMPLING</span></div>
+      <div style="margin-bottom:64px;">
+        <p style="font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:12px;">4× UPSCALE — nearest neighbour vs. bilinear interpolation</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:600px; align-items: center; ">
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_nearest.png" alt="Nearest neighbour"/></div>
+            <p class="img-caption">NEAREST NEIGHBOUR — block artefacts</p>
+          </div>
+          <div>
+            <div class="img-frame"><img src="../assets/imageprocessing/lenna_bilinear.png" alt="Bilinear"/></div>
+            <p class="img-caption">BILINEAR — smooth weighted average</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Structures -->
+      <div class="section-label"><span>DATA STRUCTURES</span></div>
+      <div class="concept-grid" style="margin-bottom: 64px;">
+        <div class="concept-box">
+          <div class="concept-key">pixel_ppm</div>
+          <div class="concept-val">
+            Holds a single color pixel as <strong>byte components[3]</strong> — indices RED, GREEN, BLUE. Accessed via typed getters/setters to abstract the memory layout.
+          </div>
+        </div>
+        <div class="concept-box">
+          <div class="concept-key">pixel_pgm</div>
+          <div class="concept-val">
+            Holds a single grayscale pixel as a single <strong>byte intensity</strong>. Luminosity from PPM is computed as the BT.601 weighted average: $0.299R + 0.587G + 0.114B$.
+          </div>
+        </div>
+        <div class="concept-box">
+          <div class="concept-key">picture</div>
+          <div class="concept-val">
+            Wraps an image: <strong>width</strong>, <strong>height</strong>, <strong>channels</strong> (1 or 3), and a <strong>void* data</strong> pointer cast to the correct pixel type at runtime.
+          </div>
+        </div>
+        <div class="concept-box">
+          <div class="concept-key">lut</div>
+          <div class="concept-val">
+            An opaque struct holding <strong>unsigned int taille</strong> (256) and <strong>byte* table</strong>. The transfer function maps each intensity value to a new one via a direct table lookup.
+          </div>
+        </div>
+      </div>
+
+      <!-- Module Architecture -->
+      <div class="section-label"><span>MODULE ARCHITECTURE</span></div>
+      <div class="module-grid">
+        <div class="module-card">
+          <div class="module-file">pixel.[h|c]</div>
+          <h4>Pixel primitives</h4>
+          <p>Typed getters and setters for <code style="font-family: var(--font-mono); font-size: 12px; color: var(--accent);">pixel_ppm</code> and <code style="font-family: var(--font-mono); font-size: 12px; color: var(--accent);">pixel_pgm</code>. Encapsulates memory layout — callers never touch raw byte offsets directly. Also provides <code style="font-family: var(--font-mono); font-size: 12px; color: var(--accent);">get_luminosity()</code> for color-to-gray conversion.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-file">pictures.[h|c]</div>
+          <h4>Image management</h4>
+          <p>Core library. Handles creation, copy, I/O (<code style="font-family: var(--font-mono); font-size: 12px; color: var(--accent);">read_picture</code>, <code style="font-family: var(--font-mono); font-size: 12px; color: var(--accent);">write_picture</code>), format conversion, channel splitting/merging, all arithmetic operations, and both resampling methods.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-file">lut.[h|c]</div>
+          <h4>LUT engine</h4>
+          <p>Creates, populates and applies lookup tables. The central function <code style="font-family: var(--font-mono); font-size: 12px; color: var(--accent);">apply_lut(picture*, lut)</code> iterates over every pixel and replaces each component value using the table — uniform interface for any filter.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-file">filename.[h|c]</div>
+          <h4>File utilities</h4>
+          <p>Extracts file extensions from paths to validate format consistency at write time — ensures a PPM buffer is never accidentally written to a <code style="font-family: var(--font-mono); font-size: 12px; color: var(--accent)">.pgm</code> file and vice versa.</p>
+        </div>
+      </div>
+
+      <!-- Back CTA -->
+      <div style="padding: 32px; border: 1px solid var(--border); border-radius: 2px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <p style="font-family: var(--font-mono); font-size: 11px; color: var(--accent2); letter-spacing: 0.12em; margin-bottom: 8px;">SOURCE CODE</p>
+          <p style="font-size: 14px; color: var(--muted2);">Full implementation available on GitHub.</p>
+        </div>
+        <a href="https://github.com/williamcheymol" class="btn btn-ghost">github.com/williamcheymol ↗</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2026 William Cheymol</span>
+    <a href="https://github.com/williamcheymol" style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); text-decoration: none; letter-spacing: 0.1em;">github.com/williamcheymol</a>
+ 

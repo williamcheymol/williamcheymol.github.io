@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>William Cheymol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="icon" type="image/png" href="assets/images/Avatar.png"/>
+  <style>
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .hero-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 60px;
+    }
+    .hero-text { flex: 1; }
+
+    /* Photo */
+    @keyframes photoBreath {
+      0%, 100% { opacity: 0.85; }
+      50%       { opacity: 1; }
+    }
+    .hero-photo-wrap {
+      flex-shrink: 0;
+      position: relative;
+      width: 300px; height: 300px;
+    }
+    .hero-photo {
+      width: 100%; height: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid rgba(0, 230, 118, 0.25);
+      animation: photoBreath 5s ease-in-out infinite;
+    }
+    .hero-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      display: block;
+      filter: grayscale(10%);
+    }
+    .hero-photo-border {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: visible;
+    }
+    .hero-glow {
+      position: absolute; top: 25%; left: 5%;
+      width: 600px; height: 600px; pointer-events: none;
+      background: radial-gradient(circle, rgba(0,230,118,0.03) 0%, transparent 70%);
+    }
+    .hero-prompt {
+      font-family: var(--font-mono);
+      font-size: 14px; color: var(--accent);
+      letter-spacing: 0.15em; margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-size: clamp(56px, 9vw, 104px);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.0;
+      margin-bottom: 24px;
+    }
+    .hero-role {
+      display: flex; align-items: center; gap: 12px;
+      height: 40px; margin-bottom: 40px;
+    }
+    .hero-role .slash {
+      font-family: var(--font-mono); font-size: 16px; color: var(--accent);
+    }
+    .hero-role .typed {
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 300; color: var(--text);
+    }
+    .cursor {
+      display: inline-block; width: 2px; height: 1.1em;
+      background: var(--accent); vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+    .hero-bio {
+      font-size: 17px; color: var(--muted2);
+      max-width: 560px; line-height: 1.9; margin-bottom: 48px;
+    }
+    .hero-bio strong { color: var(--text); font-weight: 500; }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    /* Scroll hint */
+    @keyframes scrollDrop {
+      0%   { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+      20%  { opacity: 1; }
+      80%  { opacity: 1; }
+      100% { transform: translateX(-50%) translateY(400%); opacity: 0; }
+    }
+    .scroll-hint {
+      position: absolute; bottom: 48px; left: 0; right: 0;
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+    }
+    .scroll-hint span {
+      font-family: var(--font-mono); font-size: 11px;
+      color: var(--muted2); letter-spacing: 0.25em; text-transform: uppercase;
+    }
+    .scroll-hint-track {
+      position: relative; width: 1px; height: 60px; overflow: hidden;
+      background: linear-gradient(to bottom, var(--border), transparent);
+    }
+    .scroll-hint-dot {
+      position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%) translateY(-100%);
+      width: 3px; height: 16px; border-radius: 2px;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(0,230,118,0.7);
+      animation: scrollDrop 1.8s ease-in-out infinite;
+    }
+
+    /* Info grid */
+    .info-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start;
+    }
+    .info-text p {
+      font-size: 19px; color: var(--muted2); line-height: 1.9; margin-bottom: 20px;
+    }
+    .info-text p strong { color: var(--text); font-weight: 500; }
+    .info-list { display: flex; flex-direction: column; gap: 0; }
+    .info-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 0; border-bottom: 1px solid var(--border);
+    }
+    .info-row .key {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--muted); letter-spacing: 0.12em;
+    }
+    .info-row .val { font-size: 15px; color: var(--text); }
+
+    /* Pages nav */
+    .pages-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    .page-card {
+      display: block; padding: 36px 32px;
+      border: 1px solid var(--border); border-radius: 2px;
+      text-decoration: none; background: transparent;
+      transition: background 0.2s, border-color 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .page-card:hover { background: var(--bg2); border-color: #333; }
+    .page-card .num {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--accent); letter-spacing: 0.12em; margin-bottom: 18px;
+    }
+    .page-card h3 {
+      font-size: 19px; font-weight: 600; color: var(--text); margin-bottom: 10px;
+    }
+    .page-card p {
+      font-size: 14px; color: var(--muted2); line-height: 1.75;
+    }
+    .page-card .arrow {
+      position: absolute; bottom: 28px; right: 28px;
+      font-size: 20px; color: var(--accent); opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      transform: translate(-4px, 4px);
+    }
+    .page-card:hover .arrow { opacity: 1; transform: translate(0, 0); }
+
+    @media (max-width: 900px) {
+      .hero-inner { flex-direction: column-reverse; gap: 40px; }
+      .hero-photo-wrap { width: 200px; height: 200px; }
+      .info-grid { grid-template-columns: 1fr; gap: 40px; }
+      .pages-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <nav>
+    <a href="index.html" class="logo">cheymol<span>.io</span></a>
+    <div class="links">
+      <a href="index.html" class="active">profile</a>
+      <a href="pages/finance.html">finance</a>
+      <a href="pages/tech.html">tech</a>
+      <a href="pages/events.html">events</a>
+      <a href="pages/music.html">music</a>
+    </div>
+  </nav>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero fade-up">
+      <div class="hero-glow"></div>
+      <div class="hero-inner">
+        <div class="hero-text">
+          <p class="hero-prompt">$ whoami</p>
+          <h1>William<br>Cheymol</h1>
+          <div class="hero-role">
+            <span class="slash">//</span>
+            <span class="typed" id="typed-text"></span>
+            <span class="cursor"></span>
+          </div>
+          <p class="hero-bio">
+            Finance student with a passion for <strong>derivatives markets</strong> and <strong>quantitative methods</strong>.<br>
+            Looking for a <strong>6-month</strong> Front Office internship in Trading, Structuring or Quant Research — <strong>starting June – September 2026</strong>.
+          </p>
+          <div class="hero-actions">
+            <a href="https://www.linkedin.com/in/william-cheymol/" class="btn btn-primary">Get in touch</a>
+            <a href="pages/finance.html" class="btn btn-ghost">View projects →</a>
+          </div>
+        </div>
+        <div class="hero-photo-wrap">
+          <div class="hero-photo">
+            <img src="assets/images/profile.jpg" alt="William Cheymol"/>
+          </div>
+          <!-- Deux points qui font le tour -->
+          <svg class="hero-photo-border" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <path id="photo-path" d="M 12,0 L 288,0 Q 300,0 300,12 L 300,288 Q 300,300 288,300 L 12,300 Q 0,300 0,288 L 0,12 Q 0,0 12,0 Z"/>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+
+            <!-- COMÈTE 1 — traînée -->
+            <circle r="2.6" fill="#00e676" opacity="0.5"><animateMotion dur="10s" begin="0.18s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
+            <circle r="2.0" fill="#00e676" opacity="0.28"><animateMotion dur="11s" begin="0.32s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
+            <circle r="1.4" fill="#00e676" opacity="0.13"><animateMotion dur="12s" begin="0.44s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
+            <!-- COMÈTE 1 — tête -->
+            <circle r="3.5" fill="#00e676" opacity="0.95" filter="url(#glow)"><animateMotion dur="8.5s" begin="0s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
+
+            <!-- COMÈTE 2 — traînée (demi-tour de décalage) -->
+            <circle r="2.6" fill="#00e676" opacity="0.5"><animateMotion dur="13s" begin="-2.32s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
+            <circle r="2.0" fill="#00e676" opacity="0.28"><animateMotion dur="14s" begin="-2.18s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
+            <circle r="1.4" fill="#00e676" opacity="0.13"><animateMotion dur="15s" begin="-2.06s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
+            <!-- COMÈTE 2 — tête -->
+            <circle r="3.5" fill="#00e676" opacity="0.95" filter="url(#glow)"><animateMotion dur="8s" begin="-2.5s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
+          </svg>
+        </div>
+      </div>
+      <div class="scroll-hint">
+        <span>scroll</span>
+        <div class="scroll-hint-track">
+          <div class="scroll-hint-dot"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="container">
+      <div class="section-label"><span>01 / ABOUT</span></div>
+      <div class="info-grid">
+        <div class="info-text">
+          <p>
+            Engineering student at <strong>ENSIIE</strong> in Quantitative Finance, Applied Mathematics and Computer Science. Currently on exchange at the <strong>M2QF — University of Bologna</strong>, and continuing at the <strong>M2 Quantitative Finance, Paris-Saclay</strong> (ex DEA Dominique Jeanblanc).
+          </p>
+          <p>
+            I'm drawn to the intersection of <strong>rigorous mathematics</strong> and
+            real-world market dynamics — from stochastic models to live trading environments.
+          </p>
+          <p>
+            Outside of finance, I build side projects in Python, lead the <strong>KRYPTOSPHERE chapter at ENSIIE</strong>, and play loopstation — live music built entirely through real-time layering and improvisation.
+          </p>
+        </div>
+        <div class="info-list">
+          <div class="info-row">
+            <span class="key">School</span>
+            <span class="val">ENSIIE</span>
+          </div>
+          <div class="info-row">
+            <span class="key">Location</span>
+            <span class="val">Paris, France</span>
+          </div>
+          <div class="info-row">
+            <span class="key">Available</span>
+            <span class="val">6 months · from June 2026</span>
+          </div>
+          <div class="info-row">
+            <span class="key">Target</span>
+            <span class="val">Trading · Structuring · Quant · Risk
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="key">Exchange</span>
+            <span class="val">M2QF · University of Bologna</span>
+          </div>
+          <div class="info-row">
+            <span class="key">Languages</span>
+            <span class="val">French · English · Japanese</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGES NAV -->
+    <section class="container" style="padding-top: 0;">
+      <div class="section-label"><span>02 / EXPLORE</span></div>
+      <div class="pages-grid">
+        <a href="pages/finance.html" class="page-card">
+          <div class="num">01</div>
+          <h3>Finance Projects</h3>
+          <p>Derivatives pricing, quant models, structured products and financial analysis.</p>
+          <span class="arrow">↗</span>
+        </a>
+        <a href="pages/tech.html" class="page-card">
+          <div class="num">02</div>
+          <h3>Tech Projects</h3>
+          <p>Python tools, data pipelines, backtesting engines and market data analysis.</p>
+          <span class="arrow">↗</span>
+        </a>
+        <a href="pages/music.html" class="page-card">
+          <div class="num">03</div>
+          <h3>Music</h3>
+          <p>Loopstation — live composition through real-time layering and improvisation.</p>
+          <span class="arrow">↗</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026 William Cheymol</span>
+    <span>Paris, France</span>
+  </footer>
+
+  <script>
+    const roles = ['Quantitative Finance', 'Derivatives Pricing', 'Financial Markets', 'Structured Products'];
+    let roleIdx = 0, charIdx = 0, deleting = false;
+    const el = document.getElementById('typed-text');
+
+    function type() {
+      const target = roles[roleIdx];
+      if (!deleting) {
+        el.textContent = target.slice(0, ++charIdx);
+        if (charIdx === target.length) { deleting = true; setTimeout(type, 2200); return; }
+      } else {
+        el.textContent = target.slice(0, --charIdx);
+        if (charIdx === 0) { deleting = false; roleIdx = (roleIdx + 1) % roles.length; }
+      }
+      setTimeout(type, deleting ? 38 : 80);
+    }
+    type();
+  </script>
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   

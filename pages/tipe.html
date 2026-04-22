@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TIPE — Juggling Sequences · William Cheymol</title>
+  <link href="https://fonts.googleapis.com/css2 ?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="icon" type="image/png" href="../assets/images/Avatar.png"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ]
+    });"></script>
+  <style>
+    .page-hero {
+      padding: 120px 0 60px; position: relative;
+    }
+    .page-hero .back {
+      font-family: var(--font-mono); font-size: 13px;
+      color: var(--muted); text-decoration: none; letter-spacing: 0.1em;
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-bottom: 44px; transition: color 0.2s;
+    }
+    .page-hero .back:hover { color: var(--text); }
+    .page-hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .page-hero .subtitle {
+      font-size: 17px; color: var(--muted2); max-width: 580px; line-height: 1.85;
+    }
+
+    /* Meta badges */
+    .meta-row {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .meta-badge {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+      padding: 5px 14px; border-radius: 2px;
+    }
+    .meta-grade { color: #00e676; border: 1px solid rgba(0,230,118,0.25); }
+    .meta-year  { color: var(--muted2); border: 1px solid var(--border); }
+    .meta-field { color: var(--accent2); border: 1px solid rgba(0,176,255,0.25); }
+
+    /* Section prose */
+    .prose p {
+      font-size: 16px; color: var(--muted2); line-height: 1.9; margin-bottom: 18px;
+      max-width: 780px;
+    }
+    .prose p strong { color: var(--text); font-weight: 500; }
+
+    /* Two-col layout */
+    .two-col {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;
+    }
+    .two-col-wide {
+      display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center;
+    }
+
+    /* Concept boxes */
+    .concept-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+      margin-bottom: 48px;
+    }
+    .concept-box {
+      padding: 24px; border: 1px solid var(--border); border-radius: 2px;
+    }
+    .concept-box .concept-key {
+      font-family: var(--font-mono); font-size: 11px; color: var(--accent);
+      letter-spacing: 0.12em; margin-bottom: 10px;
+    }
+    .concept-box .concept-val {
+      font-size: 14px; color: var(--muted2); line-height: 1.75;
+    }
+    .concept-box .concept-val strong { color: var(--text); font-weight: 500; }
+
+    /* Code block */
+    .code-block {
+      background: #0d0d0d; border: 1px solid var(--border); border-radius: 2px;
+      padding: 28px 32px; overflow-x: auto; margin-bottom: 0;
+    }
+    .code-block pre {
+      font-family: var(--font-mono); font-size: 13px;
+      color: #cdd6f4; line-height: 1.7; margin: 0;
+    }
+    .code-kw  { color: #cba6f7; }
+    .code-fn  { color: #89b4fa; }
+    .code-str { color: #a6e3a1; }
+    .code-cmt { color: #585b70; font-style: italic; }
+    .code-num { color: #fab387; }
+
+    /* Formula box */
+    .formula-box {
+      border: 1px solid rgba(0,230,118,0.15); border-radius: 2px;
+      padding: 28px 32px; background: rgba(0,230,118,0.02);
+      margin-bottom: 0;
+    }
+    .formula-box .formula-label {
+      font-family: var(--font-mono); font-size: 10px; color: var(--accent);
+      letter-spacing: 0.12em; margin-bottom: 16px;
+    }
+    .formula-box .formula-text {
+      font-family: var(--font-mono); font-size: 14px; color: var(--text);
+      line-height: 1.9;
+    }
+    .formula-box .formula-desc {
+      font-size: 13px; color: var(--muted); line-height: 1.75; margin-top: 16px;
+    }
+
+    /* Result stat */
+    .result-banner {
+      border: 1px solid var(--border); border-radius: 2px;
+      padding: 40px 48px;
+      display: flex; justify-content: space-between; align-items: center; gap: 40px;
+    }
+    .result-number {
+      font-size: 64px; font-weight: 700; color: var(--accent);
+      letter-spacing: -0.04em; line-height: 1; flex-shrink: 0;
+    }
+    .result-desc p {
+      font-size: 15px; color: var(--muted2); line-height: 1.8; margin-bottom: 12px;
+    }
+    .result-desc p strong { color: var(--text); font-weight: 500; }
+
+    /* Image display */
+    .img-frame {
+      border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; background: #fff;
+    }
+    .img-frame img {
+      width: 100%; display: block;
+    }
+    .img-caption {
+      font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+      letter-spacing: 0.08em; margin-top: 10px; text-align: center;
+    }
+
+    /* Steps */
+    .steps {
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .step {
+      display: flex; gap: 20px; padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step-num {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--accent); letter-spacing: 0.12em;
+      padding-top: 2px; flex-shrink: 0; min-width: 32px;
+    }
+    .step-content h4 {
+      font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px;
+    }
+    .step-content p {
+      font-size: 14px; color: var(--muted2); line-height: 1.75;
+    }
+    .step-content p strong { color: var(--text); font-weight: 500; }
+
+    /* Screenshot row */
+    .screenshot-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 900px) {
+      .page-hero { padding: 100px 0 40px; }
+      .two-col, .two-col-wide { grid-template-columns: 1fr; }
+      .concept-grid { grid-template-columns: 1fr; }
+      .result-banner { flex-direction: column; }
+      .screenshot-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <nav>
+    <a href="../index.html" class="logo">cheymol<span>.io</span></a>
+    <div class="links">
+      <a href="../index.html">profile</a>
+      <a href="finance.html">finance</a>
+      <a href="tech.html" class="active">tech</a>
+      <a href="events.html">events</a>
+      <a href="music.html">music</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero fade-up">
+      <div class="page-hero-inner">
+        <a href="tech.html" class="back">← tech projects</a>
+        <div class="meta-row">
+          <span class="meta-badge meta-year">PRÉPA MP · 2023 – 2024</span>
+          <span class="meta-badge meta-field">GRAPH THEORY · COMBINATORICS</span>
+        </div>
+        <h1>TIPE — Juggling<br>Sequence Enumeration</h1>
+        <p class="subtitle">
+          How many distinct juggling sequences exist? A graph-theoretic answer — built from scratch in Python.
+        </p>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top: 0;">
+
+      <!-- Problem -->
+      <div class="section-label"><span>THE PROBLEM</span></div>
+      <div class="two-col-wide" style="margin-bottom: 64px;">
+        <div class="prose">
+          <p>
+            Juggling has been studied mathematically since the 1980s. The question that drove this TIPE was deceptively simple : <strong>given b balls, a maximum throw height H and a sequence period t, how many valid juggling sequences exist ?</strong>
+          </p>
+          <p>
+            The answer requires formalising what "juggling" even means mathematically. The standard tool is <strong>siteswap notation</strong> — a way of encoding throw sequences as integers, where each number represents the number of time steps a ball stays in the air before landing.
+          </p>
+          <p>
+            A sequence like <strong>4 0 5 3</strong> means: throw to height 4, then no throw (0), throw to height 5, throw to height 3. Each integer encodes both the throw height and whether the ball crosses hands (odd = crossing, even = direct). The <strong>average theorem</strong> guarantees validity : a sequence is jugglable if and only if its mean is an integer equal to the number of balls.
+          </p>
+        </div>
+        <div>
+          <div class="img-frame">
+            <img src="../assets/tipe/Séquence.png" alt="Siteswap sequence 4053"/>
+          </div>
+          <p class="img-caption">SITESWAP SEQUENCE 4053 — VISUALISED WITH JUGGLING CARDS, A TOOL WHERE EACH CARD ENCODES ONE THROW</p>
+        </div>
+      </div>
+
+      <!-- Parameters -->
+      <div class="section-label"><span>THREE PARAMETERS</span></div>
+      <div class="concept-grid">
+        <div class="concept-box">
+          <div class="concept-key">b — BALLS</div>
+          <div class="concept-val">Number of balls in the air. Equals the average of all throws in the sequence.</div>
+        </div>
+        <div class="concept-box">
+          <div class="concept-key">H — MAX HEIGHT</div>
+          <div class="concept-val">Upper bound on any single throw. Constrains the state space to <strong>C(H, b)</strong> possible states.</div>
+        </div>
+        <div class="concept-box">
+          <div class="concept-key">t — PERIOD</div>
+          <div class="concept-val">Length of the repeating pattern. A period-t sequence corresponds to a <strong>closed path of length t</strong> in the state graph.</div>
+        </div>
+      </div>
+
+      <!-- Approach -->
+      <div class="section-label"><span>STATE-BASED MODEL</span></div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div>
+          <div class="prose">
+            <p>
+              The key insight is to represent the juggler's situation at any moment as a <strong>state</strong> — a binary vector of length H containing exactly b ones, where position i indicates whether a ball will land in i time steps.
+            </p>
+            <p>
+              For example, state <strong>[0, 1, 1, 0, 0]</strong> (b=2, H=5) means two balls are in the air : one lands in 2 steps, another in 3 steps.
+            </p>
+            <p>
+              Each valid throw transitions the juggler from one state to the next. This naturally defines a <strong>directed graph</strong> — the juggling graph — where nodes are states and edges are valid throws.
+            </p>
+            <p>
+              A juggling sequence of period t then corresponds exactly to a <strong>closed path of length t</strong> in this graph. Counting sequences reduces to counting closed paths.
+            </p>
+          </div>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <span class="step-num">01</span>
+            <div class="step-content">
+              <h4>Generate all states</h4>
+              <p>All binary vectors of length H with exactly b ones — that's <strong>C(H, b)</strong> states.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">02</span>
+            <div class="step-content">
+              <h4>Build the adjacency matrix</h4>
+              <p>For each state, compute all valid next states. Entry M[i][j] = 1 if state i can transition to state j.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">03</span>
+            <div class="step-content">
+              <h4>Iterate the matrix</h4>
+              <p>M<sup>k</sup>[i][i] counts closed paths of length k starting and ending at state i. <strong>tr(M<sup>k</sup>)</strong> counts all of them.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">04</span>
+            <div class="step-content">
+              <h4>Remove cycles and repetitions</h4>
+              <p>Subtract sequences that are rotations or multiples of shorter ones — using a <strong>divisor-based formula</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Juggling Graph -->
+      <div class="section-label"><span>A JUGGLING GRAPH — b = 3, H = 5</span></div>
+      <div style="margin-bottom: 64px;">
+        <div class="img-frame" style="background: #fff; max-width: 860px; margin: 0 auto 16px;">
+          <img src="../assets/tipe/map1.png" alt="Juggling graph b=3 H=5"/>
+        </div>
+        <div style="max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px;">
+          <div style="padding: 16px 20px; border: 1px solid var(--border); border-radius: 2px;">
+            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">NODES</div>
+            <div style="font-size: 13px; color: var(--muted2); line-height: 1.7;">Each node is a binary state vector of length 5 with exactly 3 ones — e.g. <strong style="color: var(--text);">11100</strong> means 3 balls about to land in 1, 2 and 3 steps.</div>
+          </div>
+          <div style="padding: 16px 20px; border: 1px solid var(--border); border-radius: 2px;">
+            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">EDGES</div>
+            <div style="font-size: 13px; color: var(--muted2); line-height: 1.7;">Each directed edge is labelled with the throw that causes the transition. Only physically valid throws are included — no collision, one ball per hand.</div>
+          </div>
+          <div style="padding: 16px 20px; border: 1px solid rgba(255,80,80,0.25); border-radius: 2px; background: rgba(255,80,80,0.03);">
+            <div style="font-family: var(--font-mono); font-size: 10px; color: #ff6b6b; letter-spacing: 0.12em; margin-bottom: 8px;">RED SELF-LOOP</div>
+            <div style="font-size: 13px; color: var(--muted2); line-height: 1.7;">The self-loop on <strong style="color: var(--text);">11100</strong> with throw 3 corresponds to the sequence <strong style="color: var(--text);">"3"</strong> — the standard 3-ball cascade.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formula -->
+      <div class="section-label"><span>COUNTING FORMULA</span></div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div class="formula-box">
+          <div class="formula-label">NEW PATTERNS AT PERIOD t</div>
+          <div class="formula-text" style="font-family: inherit;">
+            $$\gamma(t) = \operatorname{tr}(M^t) - \sum_{\substack{d \mid t \\ d < t}} \gamma(d)$$
+            $$\text{Patterns}(t) = \frac{\gamma(t)}{t}$$
+          </div>
+          <div class="formula-desc">
+            $\gamma(t)$ isolates sequences whose minimal period is exactly $t$, by subtracting all closed paths that are repetitions of shorter ones. Dividing by $t$ removes rotational equivalents (cycles).
+          </div>
+        </div>
+        <div>
+          <div class="prose">
+            <p>
+              The formula exploits the multiplicative structure of the divisors of t. For each d strictly dividing t, all closed paths of length d are also counted in tr(M<sup>t</sup>) — so we subtract them recursively.
+            </p>
+            <p>
+              This is structurally related to the <strong>Möbius inversion</strong> on the divisor lattice — a classical tool in combinatorics that here has a direct physical interpretation: stripping out juggling patterns that are "just repetitions" of simpler ones.
+            </p>
+            <p>
+              Division by t removes cyclic equivalence: the sequences 135, 351, and 513 all represent the same physical juggling pattern.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Code -->
+      <div class="section-label"><span>KEY FUNCTIONS</span></div>
+      <div class="two-col" style="margin-bottom: 16px;">
+        <div>
+          <div class="code-block">
+            <pre><span class="code-cmt"># State: binary vector, 1 = ball landing at position i</span>
+<span class="code-kw">def</span> <span class="code-fn">next_state</span>(state, throw):
+    shifted = state[<span class="code-num">1</span>:] + [<span class="code-num">0</span>]
+    <span class="code-kw">if</span> throw == <span class="code-num">0</span>:
+        <span class="code-kw">return</span> shifted, throw  <span class="code-cmt"># no throw</span>
+    <span class="code-kw">elif</span> shifted[throw - <span class="code-num">1</span>] == <span class="code-num">1</span>:
+        <span class="code-kw">return</span> [], throw  <span class="code-cmt"># collision — invalid</span>
+    <span class="code-kw">else</span>:
+        shifted[throw - <span class="code-num">1</span>] = <span class="code-num">1</span>
+        <span class="code-kw">return</span> shifted, throw
+
+<span class="code-cmt"># Adjacency matrix via state transitions</span>
+<span class="code-kw">def</span> <span class="code-fn">adjacency_matrix</span>(num_balls, max_height):
+    states = all_states(num_balls, max_height)
+    matrix = []
+    <span class="code-kw">for</span> state <span class="code-kw">in</span> states:
+        row = [<span class="code-num">0</span>] * len(states)
+        reachable, _ = all_next_states(state)
+        <span class="code-kw">for</span> next_s <span class="code-kw">in</span> reachable:
+            row[states.index(next_s)] = <span class="code-num">1</span>
+        matrix.append(row)
+    <span class="code-kw">return</span> np.array(matrix)</pre>
+          </div>
+        </div>
+        <div>
+          <div class="code-block">
+            <pre><span class="code-cmt"># Counting formula — remove cycles & repetitions</span>
+<span class="code-kw">def</span> <span class="code-fn">new_patterns</span>(adj_matrix, max_period):
+    counts = []
+    <span class="code-kw">for</span> period <span class="code-kw">in</span> range(<span class="code-num">1</span>, max_period + <span class="code-num">1</span>):
+        trace = matrix_trace(matrix_power(adj_matrix, period))
+        <span class="code-kw">for</span> d <span class="code-kw">in</span> divisors(period):
+            trace -= counts[d - <span class="code-num">1</span>]  <span class="code-cmt"># subtract shorter patterns</span>
+        counts.append(trace)
+    <span class="code-kw">return</span> counts
+
+<span class="code-cmt"># Random valid sequence generator</span>
+<span class="code-kw">def</span> <span class="code-fn">random_pattern</span>(num_balls, max_height, period):
+    sequences = census_filtered(num_balls, max_height, period)
+    <span class="code-kw">return</span> sequences[random.randint(<span class="code-num">0</span>, len(sequences) - <span class="code-num">1</span>)]
+
+<span class="code-cmt"># Example output</span>
+<span class="code-cmt">>>> random_pattern(3, 5, 3)  →  '234'</span>
+<span class="code-cmt">>>> random_pattern(4, 6, 5)  →  '06662'</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="section-label"><span>RESULT</span></div>
+      <div class="result-banner" style="margin-bottom: 64px;">
+        <div class="result-number">1,342,382</div>
+        <div class="result-desc">
+          <p>
+            Running <code style="font-family: var(--font-mono); font-size: 13px; color: var(--accent);">all_patternsam()</code> across all ball counts up to <strong>b = 10</strong>, with maximum height <strong>H = 10</strong> and periods up to <strong>t = 10</strong>, yields over 1.3 million distinct juggling sequences.
+          </p>
+          <p>
+            The random pattern generator confirms census completeness — each call returns a different valid siteswap, verifiable by the average theorem.
+          </p>
+        </div>
+      </div>
+
+      <!-- Back CTA -->
+      <div style="padding: 32px; border: 1px solid var(--border); border-radius: 2px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <p style="font-family: var(--font-mono); font-size: 11px; color: var(--accent2); letter-spacing: 0.12em; margin-bottom: 8px;">SOURCE CODE</p>
+          <p style="font-size: 14px; color: var(--muted2);">Full implementation available on GitHub.</p>
+        </div>
+        <a href="https://github.com/williamcheymol" class="btn btn-ghost">github.com/williamcheymol ↗</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2026 William Cheymol</span>
+    <a href="https://github.com/williamcheymol" style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); text-decoration: none; letter-spacing: 0.1em;">github.com/williamcheymol</a>
+  </footer>
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
