@@ -243,6 +243,38 @@ footer span, footer a {
   letter-spacing: 0.1em;
 }
 
+/* ---- STATUS BADGES (shared across all project pages) ---- */
+.project-status {
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.1em; padding: 4px 12px; border-radius: 2px;
+}
+.status-done { color: var(--accent);  border: 1px solid rgba(0,230,118,0.25); }
+.status-wip  { color: #ffd54f;        border: 1px solid rgba(255,213,79,0.25); }
+.status-soon { color: var(--muted);   border: 1px solid var(--border); }
+
+/* ---- LINKED PROJECT CARD HOVER (green glow, shared) ---- */
+a.project-card {
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+a.project-card:hover {
+  background: var(--bg2);
+  border-color: rgba(0,230,118,0.4);
+  box-shadow: 0 0 0 1px rgba(0,230,118,0.12), 0 4px 24px rgba(0,230,118,0.06);
+  transform: translateY(-2px);
+}
+
+/* ---- SCROLL REVEAL ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
 /* ---- ANIMATIONS ---- */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }

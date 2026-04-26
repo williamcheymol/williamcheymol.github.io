@@ -138,7 +138,7 @@
 
     /* Pages nav */
     .pages-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
     }
     .page-card {
       display: block; padding: 36px 32px;
@@ -184,7 +184,7 @@
       <a href="pages/finance.html">finance</a>
       <a href="pages/tech.html">tech</a>
       <a href="pages/events.html">events</a>
-      <a href="pages/music.html">music</a>
+      <a href="pages/loop.html">loop</a>
     </div>
   </nav>
 
@@ -207,7 +207,6 @@
           </p>
           <div class="hero-actions">
             <a href="https://www.linkedin.com/in/william-cheymol/" class="btn btn-primary">Get in touch</a>
-            <a href="pages/finance.html" class="btn btn-ghost">View projects →</a>
           </div>
         </div>
         <div class="hero-photo-wrap">
@@ -310,10 +309,16 @@
           <p>Python tools, data pipelines, backtesting engines and market data analysis.</p>
           <span class="arrow">↗</span>
         </a>
-        <a href="pages/music.html" class="page-card">
+        <a href="pages/events.html" class="page-card">
           <div class="num">03</div>
-          <h3>Music</h3>
-          <p>Loopstation — live composition through real-time layering and improvisation.</p>
+          <h3>Events</h3>
+          <p>Conferences, hackathons and student initiatives — organising and participating in the finance & tech scene.</p>
+          <span class="arrow">↗</span>
+        </a>
+        <a href="pages/loop.html" class="page-card">
+          <div class="num">04</div>
+          <h3>Loopstation</h3>
+          <p>Live music built from nothing — one layer at a time, in real time, with no safety net.</p>
           <span class="arrow">↗</span>
         </a>
       </div>
@@ -342,7 +347,20 @@
       setTimeout(type, deleting ? 38 : 80);
     }
     type();
+
+    // Scroll reveal
+    (function(){
+      var sel = '.page-card, .info-row';
+      document.querySelectorAll(sel).forEach(function(el){ el.classList.add('reveal'); });
+      document.querySelectorAll('.pages-grid').forEach(function(g){
+        Array.from(g.children).forEach(function(c,i){ c.style.transitionDelay = (i*80)+'ms'; });
+      });
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+      }, {threshold:0.07, rootMargin:'0px 0px -28px 0px'});
+      document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    })();
   </script>
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        

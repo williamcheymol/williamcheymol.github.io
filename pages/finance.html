@@ -48,14 +48,6 @@
       font-family: var(--font-mono); font-size: 12px;
       color: var(--accent); letter-spacing: 0.12em;
     }
-    .project-status {
-      font-family: var(--font-mono); font-size: 10px;
-      letter-spacing: 0.1em; padding: 4px 12px; border-radius: 2px;
-    }
-    .status-wip  { color: #ffd54f; border: 1px solid rgba(255,213,79,0.25); }
-    .status-soon { color: var(--muted); border: 1px solid var(--border); }
-    .status-done { color: var(--accent); border: 1px solid rgba(0,230,118,0.25); }
-
     .project-card h3 {
       font-size: 19px; font-weight: 600; color: var(--text); margin-bottom: 12px;
     }
@@ -98,7 +90,7 @@
       <a href="finance.html" class="active">finance</a>
       <a href="tech.html">tech</a>
       <a href="events.html">events</a>
-      <a href="music.html">music</a>
+      <a href="loop.html">loop</a>
     </div>
   </nav>
 
@@ -139,10 +131,10 @@
       <div class="section-label"><span>PROJECTS</span></div>
       <div class="projects-grid">
 
-        <div class="project-card">
+        <a href="delta-hedging.html" class="project-card" style="text-decoration:none;color:inherit;display:block;">
           <div class="project-top">
             <span class="project-num">01</span>
-            <span class="project-status status-wip">IN PROGRESS</span>
+            <span class="project-status status-done">PHASE 1 COMPLETE</span>
           </div>
           <h3>Option Pricing & Hedging Simulation</h3>
           <p>
@@ -155,7 +147,7 @@
             <span class="tag">Greeks</span>
             <span class="tag">Jupyter</span>
           </div>
-        </div>
+        </a>
 
         <div class="project-card">
           <div class="project-top">
@@ -225,5 +217,18 @@
     <span>© 2026 William Cheymol</span>
     <a href="https://github.com/williamcheymol" style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); text-decoration: none; letter-spacing: 0.1em;">github.com/williamcheymol</a>
   </footer>
+  <script>
+    (function(){
+      var sel = '.project-card, .focus-item';
+      document.querySelectorAll(sel).forEach(function(el){ el.classList.add('reveal'); });
+      document.querySelectorAll('.projects-grid, .focus-grid').forEach(function(g){
+        Array.from(g.children).forEach(function(c,i){ c.style.transitionDelay = (i*80)+'ms'; });
+      });
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+      }, {threshold:0.07, rootMargin:'0px 0px -28px 0px'});
+      document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    })();
+  </script>
 </body>
 <

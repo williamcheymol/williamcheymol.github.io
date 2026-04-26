@@ -159,7 +159,7 @@
       <a href="finance.html">finance</a>
       <a href="tech.html">tech</a>
       <a href="events.html" class="active">events</a>
-      <a href="music.html">music</a>
+      <a href="loop.html">loop</a>
     </div>
   </nav>
 
@@ -349,6 +349,19 @@
     </div>
   </main>
 
+  <script>
+    (function(){
+      var sel = '.event-card, .vivatech-card, .project-box';
+      document.querySelectorAll(sel).forEach(function(el){ el.classList.add('reveal'); });
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+      }, {threshold:0.07, rootMargin:'0px 0px -28px 0px'});
+      document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    })();
+  </script>
   <footer>
     <span>© 2026 William Cheymol</span>
-    <span>Paris, France</spa
+    <span>Paris, France</span>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Delta &amp; Gamma Hedging · William Cheymol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="icon" type="image/png" href="../assets/images/Avatar.png"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ]
+    });"></script>
+  <style>
+    .page-hero { padding: 120px 0 60px; position: relative; }
+    .page-hero .back {
+      font-family: var(--font-mono); font-size: 13px;
+      color: var(--muted); text-decoration: none; letter-spacing: 0.1em;
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-bottom: 44px; transition: color 0.2s;
+    }
+    .page-hero .back:hover { color: var(--text); }
+    .page-hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .page-hero .subtitle { font-size: 17px; color: var(--muted2); max-width: 580px; line-height: 1.85; }
+
+    .meta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .meta-badge {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+      padding: 5px 14px; border-radius: 2px;
+    }
+    .meta-grade { color: #00e676; border: 1px solid rgba(0,230,118,0.25); }
+    .meta-year  { color: var(--muted2); border: 1px solid var(--border); }
+    .meta-field { color: var(--accent2); border: 1px solid rgba(0,176,255,0.25); }
+
+    .prose p { font-size: 16px; color: var(--muted2); line-height: 1.9; margin-bottom: 18px; max-width: 780px; }
+    .prose p strong { color: var(--text); font-weight: 500; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .two-col-wide { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center; }
+
+    .concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 48px; }
+    .concept-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 48px; }
+    .concept-box { padding: 24px; border: 1px solid var(--border); border-radius: 2px; }
+    .concept-box .concept-key { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 10px; }
+    .concept-box .concept-val { font-size: 13px; color: var(--muted2); line-height: 1.75; }
+    .concept-box .concept-val strong { color: var(--text); font-weight: 500; }
+
+    .formula-box {
+      border: 1px solid rgba(0,230,118,0.15); border-radius: 2px;
+      padding: 28px 32px; background: rgba(0,230,118,0.02); margin-bottom: 0;
+    }
+    .formula-box .formula-label {
+      font-family: var(--font-mono); font-size: 10px; color: var(--accent);
+      letter-spacing: 0.12em; margin-bottom: 16px;
+    }
+    .formula-box .formula-desc { font-size: 13px; color: var(--muted); line-height: 1.75; margin-top: 16px; }
+
+    .module-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 48px; }
+    .module-card { padding: 28px; border: 1px solid var(--border); border-radius: 2px; }
+    .module-card .module-file { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 10px; }
+    .module-card h4 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .module-card p { font-size: 13px; color: var(--muted2); line-height: 1.75; }
+
+    .img-frame { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; background: #080808; }
+    .img-frame img { width: 100%; display: block; }
+    .img-caption { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; margin-top: 8px; text-align: center; }
+
+    .steps { display: flex; flex-direction: column; gap: 0; }
+    .step { display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+    .step-num { font-family: var(--font-mono); font-size: 12px; color: var(--accent); letter-spacing: 0.12em; padding-top: 2px; flex-shrink: 0; min-width: 28px; }
+    .step-content h4 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .step-content p { font-size: 14px; color: var(--muted2); line-height: 1.75; }
+    .step-content p strong { color: var(--text); font-weight: 500; }
+
+    @media (max-width: 900px) {
+      .page-hero { padding: 100px 0 40px; }
+      .two-col, .two-col-wide { grid-template-columns: 1fr; }
+      .concept-grid, .concept-grid-4 { grid-template-columns: 1fr 1fr; }
+      .module-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <nav>
+    <a href="../index.html" class="logo">cheymol<span>.io</span></a>
+    <div class="links">
+      <a href="../index.html">profile</a>
+      <a href="finance.html" class="active">finance</a>
+      <a href="tech.html">tech</a>
+      <a href="events.html">events</a>
+      <a href="loop.html">loop</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero fade-up">
+      <div class="page-hero-inner">
+        <a href="finance.html" class="back">← finance projects</a>
+        <div class="meta-row">
+          <span class="meta-badge meta-field">QUANTITATIVE FINANCE</span>
+          <span class="meta-badge meta-field">PYTHON</span>
+        </div>
+        <h1>Delta &amp; Gamma<br>Hedging</h1>
+        <p class="subtitle">
+          A self-contained Python simulation of European option hedging under Black-Scholes — from GBM path generation to P&amp;L attribution, with an interactive Plotly dashboard.
+        </p>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top: 0;">
+
+      <!-- The Problem -->
+      <div class="section-label"><span>THE PROBLEM</span></div>
+      <div class="two-col-wide" style="margin-bottom: 64px;">
+        <div class="prose">
+          <p>
+            When a trader sells an option, they collect a premium but take on directional risk: the option's value moves with the underlying. <strong>Delta hedging</strong> neutralises this exposure by holding $\Delta$ shares per option sold, making the portfolio locally immune to small price moves.
+          </p>
+          <p>
+            In theory, continuous rebalancing under Black-Scholes replicates the option perfectly — the P&amp;L is zero on every path. In practice, hedging is discrete (daily, weekly), which introduces a residual <strong>tracking error</strong> that shrinks as rebalancing becomes more frequent.
+          </p>
+          <p>
+            This project simulates both <strong>delta hedging</strong> and <strong>delta-gamma hedging</strong> across thousands of Monte Carlo paths, quantifying the error, studying the effect of rebalancing frequency, and decomposing the P&amp;L into gamma and theta contributions.
+          </p>
+        </div>
+        <div>
+          <div class="steps">
+            <div class="step">
+              <span class="step-num">01</span>
+              <div class="step-content">
+                <h4>Simulate paths</h4>
+                <p>Generate GBM trajectories under the risk-neutral measure. <strong>Antithetic variates</strong> halve the Monte Carlo variance at no extra cost.</p>
+              </div>
+            </div>
+            <div class="step">
+              <span class="step-num">02</span>
+              <div class="step-content">
+                <h4>Price &amp; hedge</h4>
+                <p>At each time step, compute delta (and gamma) from the Black-Scholes formula. Rebalance the portfolio and record the P&amp;L.</p>
+              </div>
+            </div>
+            <div class="step">
+              <span class="step-num">03</span>
+              <div class="step-content">
+                <h4>Analyse the error</h4>
+                <p>Measure hedging error across frequencies, vol mismatches, and option types. Verify the <strong>1/√n</strong> convergence law.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Black-Scholes -->
+      <div class="section-label"><span>BLACK-SCHOLES FRAMEWORK</span></div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div class="prose">
+          <p>
+            Under Black-Scholes, the stock price follows a <strong>Geometric Brownian Motion</strong>:
+            $$dS = \mu S \, dt + \sigma S \, dW$$
+            Under the risk-neutral measure ($\mu \to r$), the fair value of a European call is given in closed form. The model assumes constant volatility, no dividends, and frictionless markets.
+          </p>
+          <p>
+            The simulation is run under the risk-neutral measure, making the GBM drift equal to the risk-free rate $r$ — the correct framework for option pricing and replication.
+          </p>
+        </div>
+        <div class="formula-box">
+          <div class="formula-label">CALL PRICE — BLACK-SCHOLES</div>
+          $$C = S \cdot N(d_1) - K e^{-rT} \cdot N(d_2)$$
+          $$d_1 = \frac{\ln(S/K) + (r + \sigma^2/2)\,T}{\sigma\sqrt{T}}, \quad d_2 = d_1 - \sigma\sqrt{T}$$
+          <div class="formula-desc">Put price follows from put-call parity: $P = C - S + Ke^{-rT}$.</div>
+        </div>
+      </div>
+
+      <!-- Greeks -->
+      <div class="section-label"><span>THE GREEKS</span></div>
+      <div class="prose" style="margin-bottom: 28px;">
+        <p>The Greeks measure the sensitivity of the option price to each market parameter. Delta and gamma drive the hedging strategy; vega captures volatility risk.</p>
+      </div>
+      <div class="concept-grid" style="margin-bottom: 16px;">
+        <div class="concept-box">
+          <div class="concept-key">DELTA Δ</div>
+          <div class="concept-val">
+            $\Delta = N(d_1)$ — price change per €1 move in $S$. For a call, $\Delta \in [0, 1]$; for a put, $\Delta \in [-1, 0]$. <strong>The number of shares to hold in the hedge.</strong>
+          </div>
+        </div>
+        <div class="concept-box">
+          <div class="concept-key">GAMMA Γ</div>
+          <div class="concept-val">
+            $\Gamma = \frac{N'(d_1)}{S\sigma\sqrt{T}}$ — rate of change of delta. Peaks sharply <strong>at-the-money near expiry</strong>, where small price moves swing delta violently and hedging becomes hard.
+          </div>
+        </div>
+        <div class="concept-box">
+          <div class="concept-key">VEGA ν</div>
+          <div class="concept-val">
+            $\nu = S \cdot N'(d_1) \cdot \sqrt{T}$ — price change per 1% move in $\sigma$. Proportional to gamma: $\nu = S^2 \sigma T \cdot \Gamma$. <strong>A high-gamma position is also high-vega.</strong>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom: 64px;">
+        <div class="img-frame">
+          <img src="../assets/deltahedging/Greeks.png" alt="Greeks vs spot price"/>
+        </div>
+        <p class="img-caption">DELTA · GAMMA · VEGA — four maturities from T=1y to T=0.1y</p>
+      </div>
+
+      <!-- Simulation -->
+      <div class="section-label"><span>MONTE CARLO SIMULATION</span></div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div>
+          <div class="prose">
+            <p>
+              The simulation generates 1,000 GBM paths over 252 daily steps. Each path is paired with its <strong>antithetic counterpart</strong> — the same random draw $Z$ and $-Z$ — which cancels noise algebraically and halves variance with no extra computation.
+            </p>
+            <p>
+              The hedging loop iterates over <strong>time steps</strong>, operating on all 1,000 paths simultaneously as numpy arrays. This removes the outer path loop and gives a ~100× speedup over a naive nested loop.
+            </p>
+          </div>
+          <div class="concept-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 0;">
+            <div class="concept-box">
+              <div class="concept-key">PATHS</div>
+              <div class="concept-val"><strong>1,000</strong> Monte Carlo trajectories, seeded for reproducibility.</div>
+            </div>
+            <div class="concept-box">
+              <div class="concept-key">STEPS</div>
+              <div class="concept-val"><strong>252</strong> daily rebalancing steps over T = 1 year.</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="img-frame">
+            <img src="../assets/deltahedging/Paths.png" alt="GBM paths"/>
+          </div>
+          <p class="img-caption">GBM PATHS — σ = 30%, 110 paths, strike K = 100</p>
+        </div>
+      </div>
+
+      <!-- Hedging -->
+      <div class="section-label"><span>DELTA HEDGING</span></div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div>
+          <div class="img-frame">
+            <img src="../assets/deltahedging/Distribution.png" alt="P&L distribution"/>
+          </div>
+          <p class="img-caption">P&L DISTRIBUTION — daily rebalancing, 1,000 paths</p>
+        </div>
+        <div class="prose">
+          <p>
+            At each rebalancing step, the hedger adjusts the share position to $\Delta(t, S_t)$. With <strong>continuous rebalancing</strong>, the residual P&amp;L is exactly zero. With discrete rebalancing, the tracking error scales as:
+            $$\text{error} \propto \sigma \sqrt{\frac{T}{n}}$$
+            Halving the interval cuts the error by ~30%. The distribution should be centered on zero — a biased mean signals model miscalibration.
+          </p>
+        </div>
+      </div>
+
+      <!-- Gamma Hedging -->
+      <div class="section-label"><span>DELTA-GAMMA HEDGING</span></div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div class="prose">
+          <p>
+            Delta hedging leaves gamma exposure: large moves in $S$ shift delta and break the hedge. <strong>Gamma hedging</strong> adds a second option to neutralize $\Gamma$ simultaneously:
+          </p>
+          <div class="formula-box" style="margin-bottom: 18px;">
+            <div class="formula-label">GAMMA NEUTRALITY</div>
+            $$h_2 = \frac{\Gamma_{\text{target}}}{\Gamma_{\text{hedge}}}, \quad h_1 = \Delta_{\text{target}} - h_2 \cdot \Delta_{\text{hedge}}$$
+            <div class="formula-desc">Two equations, two unknowns — $h_1$ shares and $h_2$ units of a second option with strike $K_{\text{hedge}} \neq K$.</div>
+          </div>
+          <p>
+            With gamma neutralized, the portfolio survives larger moves between rebalancings. Error drops significantly at low rebalancing frequencies — the regime where gamma hedging pays off most.
+          </p>
+        </div>
+        <div>
+          <div class="img-frame" style="margin-bottom: 14px;">
+            <img src="../assets/deltahedging/Call Hedge.png" alt="Call hedge"/>
+          </div>
+          <p class="img-caption">CALL HEDGE — portfolio vs option price, weekly rebalancing</p>
+        </div>
+      </div>
+
+      <!-- P&L Attribution -->
+      <div class="section-label"><span>P&amp;L ATTRIBUTION</span></div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div>
+          <div class="img-frame" style="margin-bottom: 14px;">
+            <img src="../assets/deltahedging/P&L Attribution.png" alt="P&L Attribution"/>
+          </div>
+          <p class="img-caption">P&L ATTRIBUTION — gamma vs theta, mean over 1,000 paths</p>
+        </div>
+        <div class="prose">
+          <p>
+            At each time step, the hedging P&amp;L decomposes exactly into:
+          </p>
+          <div class="formula-box" style="margin-bottom: 18px;">
+            <div class="formula-label">P&L DECOMPOSITION</div>
+            $$\Delta\Pi = \underbrace{\frac{1}{2}\Gamma(\Delta S)^2}_{\text{gamma}} - \underbrace{\frac{1}{2}\Gamma\sigma^2 S^2 \, dt}_{\text{theta}}$$
+            <div class="formula-desc">These two terms cancel in expectation under Black-Scholes. The net P&amp;L tracks the gap between realized and implied volatility.</div>
+          </div>
+          <p>
+            When $\sigma_{\text{real}} > \sigma_{\text{hedge}}$, realized moves are larger than expected, gamma P&amp;L dominates, and the hedger profits. When $\sigma_{\text{real}} < \sigma_{\text{hedge}}$: theta cost exceeds gamma gains, and P&amp;L is negative. This is <strong>vega risk</strong>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Key results table -->
+      <div class="section-label"><span>MAIN RESULTS</span></div>
+      <div class="concept-grid-4" style="margin-bottom: 64px;">
+        <div class="concept-box">
+          <div class="concept-key">DAILY ERROR</div>
+          <div class="concept-val"><strong style="font-size: 22px; color: var(--text);">~4.1%</strong><br>1,000 paths, n=252</div>
+        </div>
+        <div class="concept-box">
+          <div class="concept-key">WEEKLY ERROR</div>
+          <div class="concept-val"><strong style="font-size: 22px; color: var(--text);">~9.1%</strong><br>vs ~4.8% with gamma hedge</div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="section-label"><span>GALLERY</span></div>
+      <div style="margin-bottom: 16px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+          <div>
+            <div class="img-frame"><img src="../assets/deltahedging/Errors.png" alt="Hedging error vs frequency"/></div>
+            <p class="img-caption">ERROR VS FREQUENCY — simulated vs 1/√n theoretical</p>
+          </div>
+          <div>
+            <div class="img-frame"><img src="../assets/deltahedging/P&L.png" alt="P&L"/></div>
+            <p class="img-caption">MEAN P&L VS σ_HEDGE — volatility mismatch effect</p>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 64px;">
+          <div>
+            <div class="img-frame"><img src="../assets/deltahedging/Pricing.png" alt="BS pricing"/></div>
+            <p class="img-caption">BLACK-SCHOLES PRICING — call &amp; put vs spot</p>
+          </div>
+          <div>
+            <div class="img-frame"><img src="../assets/deltahedging/Distribution.png" alt="Distribution"/></div>
+            <p class="img-caption">DELTA VS GAMMA HEDGE — P&L distribution comparison</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 64px;">
+        <div style="padding: 32px; border: 1px solid var(--border); border-radius: 2px;">
+          <p style="font-family: var(--font-mono); font-size: 11px; color: var(--accent2); letter-spacing: 0.12em; margin-bottom: 8px;">SOURCE CODE</p>
+          <p style="font-size: 14px; color: var(--muted2); margin-bottom: 20px;">Full implementation on GitHub — pricing, simulation, hedging, tests, and notebook.</p>
+          <a href="https://github.com/williamcheymol/delta-hedging" class="btn btn-ghost">github.com/williamcheymol/delta-hedging ↗</a>
+        </div>
+        <div style="padding: 32px; border: 1px solid rgba(0,230,118,0.12); border-radius: 2px; background: rgba(0,230,118,0.02);">
+          <p style="font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">INTERACTIVE NOTEBOOK</p>
+          <p style="font-size: 14px; color: var(--muted2); margin-bottom: 20px;">Run the full dashboard in your browser via Binder — no installation required.</p>
+          <a href="https://mybinder.org/v2/gh/williamcheymol/delta-hedging/main?filepath=notebooks/visualization.ipynb" class="btn btn-ghost">Launch on Binder ↗</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2026 William Cheymol</span>
+    <a href="https://github.com/williamcheymol" style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); text-decoration: none; letter-spacing: 0.1em;">github.com/williamcheymol</a>
+  </footer>
+  <script>
+    (function(){
+      var sel = '.concept-box, .formula-box, .module-card, .img-frame, .step, .two-col, .two-col-wide';
+      document.querySelectorAll(sel).forEach(function(el){ el.classList.add('reveal'); });
+      document.querySelectorAll('.concept-grid, .concept-grid-4, .module-grid').forEach(function(g){
+        Array.from(g.children).forEach(function(c,i){ c.style.transitionDelay = (i*70)+'ms'; });
+      });
+      document.querySelectorAll('.steps').forEach(function(g){
+        Array.from(g.querySelectorAll('.step')).forEach(function(c,i){ c.style.transitionDelay = (i*60)+'ms'; });
+      });
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+      }, {threshold:0.06, rootMargin:'0px 0px -28px 0px'});
+      document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    })();
+  </script>
+</body>
+</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      

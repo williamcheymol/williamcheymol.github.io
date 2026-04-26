@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Music — William Cheymol</title>
+  <title>Loop — William Cheymol</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="icon" type="image/png" href="../assets/images/Avatar.png"/>
   <style>
     .page-hero {
       padding: 120px 0 60px; position: relative; overflow: hidden;
@@ -119,20 +120,20 @@
   <div class="grid-bg"></div>
 
   <nav>
-    <a href="index.html" class="logo">cheymol<span>.io</span></a>
+    <a href="../index.html" class="logo">cheymol<span>.io</span></a>
     <div class="links">
-      <a href="index.html">profile</a>
+      <a href="../index.html">profile</a>
       <a href="finance.html">finance</a>
       <a href="tech.html">tech</a>
       <a href="events.html">events</a>
-      <a href="music.html" class="active">music</a>
+      <a href="loop.html" class="active">loop</a>
     </div>
   </nav>
 
   <main>
     <div class="page-hero fade-up">
       <div class="page-hero-inner">
-        <a href="index.html" class="back">← back</a>
+        <a href="../index.html" class="back">← back</a>
         <h1>Loopstation</h1>
         <p class="subtitle">
           Live music built from nothing — one layer at a time, in real time, with no safety net.
@@ -297,7 +298,29 @@
       bar.style.animationDelay = (i * 0.06) + 's';
       waveform.appendChild(bar);
     });
+
+    // Scroll reveal
+    (function(){
+      var sel = '.loop-step, .parallel-card, .loop-explain > div, .loop-process';
+      document.querySelectorAll(sel).forEach(function(el){ el.classList.add('reveal'); });
+      // Stagger parallels
+      document.querySelectorAll('.parallels-grid').forEach(function(g){
+        Array.from(g.children).forEach(function(c,i){ c.style.transitionDelay = (i*80)+'ms'; });
+      });
+      // Stagger loop steps
+      document.querySelectorAll('.loop-process').forEach(function(g){
+        Array.from(g.querySelectorAll('.loop-step')).forEach(function(c,i){ c.style.transitionDelay = (i*60)+'ms'; });
+      });
+      // Competition result cards
+      document.querySelectorAll('[style*="grid-template-columns"] > div, .vivatech-card, iframe').forEach(function(el){
+        el.classList.add('reveal');
+      });
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+      }, {threshold:0.07, rootMargin:'0px 0px -28px 0px'});
+      document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    })();
   </script>
 </body>
 </html>
-                                                                
+                                                                                               

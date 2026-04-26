@@ -58,14 +58,6 @@
       background: transparent; transition: background 0.2s, border-color 0.2s;
     }
     .project-card:hover { background: var(--bg2); border-color: #333; }
-    a.project-card:hover {
-      background: var(--bg2);
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(0,230,118,0.15), 0 4px 24px rgba(0,230,118,0.06);
-      transform: translateY(-2px);
-      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
-    }
-    a.project-card { transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
     .project-card.coming-soon { opacity: 0.4; pointer-events: none; }
     .project-top {
       display: flex; justify-content: space-between; align-items: flex-start;
@@ -75,12 +67,6 @@
       font-family: var(--font-mono); font-size: 12px;
       color: var(--accent2); letter-spacing: 0.12em;
     }
-    .project-status {
-      font-family: var(--font-mono); font-size: 10px;
-      letter-spacing: 0.1em; padding: 4px 12px; border-radius: 2px;
-    }
-    .status-wip  { color: #ffd54f; border: 1px solid rgba(255,213,79,0.25); }
-    .status-soon { color: var(--muted); border: 1px solid var(--border); }
 
     .project-card h3 {
       font-size: 19px; font-weight: 600; color: var(--text); margin-bottom: 12px;
@@ -106,7 +92,7 @@
       <a href="finance.html">finance</a>
       <a href="tech.html" class="active">tech</a>
       <a href="events.html">events</a>
-      <a href="music.html">music</a>
+      <a href="loop.html">loop</a>
     </div>
   </nav>
 
@@ -170,6 +156,7 @@
         <a href="image-processing.html" class="project-card" style="text-decoration: none; color: inherit; display: block;">
           <div class="project-top">
             <span class="project-num">01</span>
+            <span class="project-status status-done">DONE</span>
           </div>
           <h3>Image Processing Library</h3>
           <p>
@@ -189,6 +176,7 @@
         <a href="tipe.html" class="project-card" style="text-decoration: none; display: block; cursor: pointer; position: relative;">
           <div class="project-top">
             <span class="project-num">02</span>
+            <span class="project-status status-done">DONE</span>
           </div>
           <h3>TIPE — Juggling Sequence Enumeration</h3>
           <p>
@@ -257,5 +245,18 @@
     <span>© 2026 William Cheymol</span>
     <a href="https://github.com/williamcheymol" style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); text-decoration: none; letter-spacing: 0.1em;">github.com/williamcheymol</a>
   </footer>
+  <script>
+    (function(){
+      var sel = '.project-card, .stack-row';
+      document.querySelectorAll(sel).forEach(function(el){ el.classList.add('reveal'); });
+      document.querySelectorAll('.projects-grid').forEach(function(g){
+        Array.from(g.children).forEach(function(c,i){ c.style.transitionDelay = (i*80)+'ms'; });
+      });
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+      }, {threshold:0.07, rootMargin:'0px 0px -28px 0px'});
+      document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    })();
+  </script>
 </body>
 </                                                                                                                                                                                                                                                                                         
