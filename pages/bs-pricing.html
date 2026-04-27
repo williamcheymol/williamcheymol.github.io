@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Black-Scholes PDE Pricer · William Cheymol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="icon" type="image/png" href="../assets/images/Avatar.png"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ]
+    });"></script>
+  <style>
+    .page-hero { padding: 120px 0 60px; position: relative; }
+    .page-hero .back {
+      font-family: var(--font-mono); font-size: 13px;
+      color: var(--muted); text-decoration: none; letter-spacing: 0.1em;
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-bottom: 44px; transition: color 0.2s;
+    }
+    .page-hero .back:hover { color: var(--text); }
+    .page-hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 20px;
+    }
+    .page-hero .subtitle { font-size: 17px; color: var(--muted2); max-width: 580px; line-height: 1.85; }
+
+    .meta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .meta-badge {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+      padding: 5px 14px; border-radius: 2px;
+    }
+    .meta-green { color: var(--accent);  border: 1px solid rgba(0,230,118,0.25); }
+    .meta-muted { color: var(--muted2); border: 1px solid var(--border); }
+    .meta-blue  { color: var(--accent2); border: 1px solid rgba(0,176,255,0.25); }
+
+    .prose p { font-size: 16px; color: var(--muted2); line-height: 1.9; margin-bottom: 18px; max-width: 780px; }
+    .prose p strong { color: var(--text); font-weight: 500; }
+
+    .two-col      { display: grid; grid-template-columns: 1fr 1fr;      gap: 48px; align-items: start; }
+    .two-col-wide { display: grid; grid-template-columns: 1.4fr 1fr;    gap: 48px; align-items: start; }
+
+    .concept-grid   { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 48px; }
+    .concept-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 48px; }
+    .concept-box { padding: 24px; border: 1px solid var(--border); border-radius: 2px; }
+    .concept-box .concept-key { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 10px; }
+    .concept-box .concept-val { font-size: 13px; color: var(--muted2); line-height: 1.75; }
+    .concept-box .concept-val strong { color: var(--text); font-weight: 500; }
+
+    .formula-box {
+      border: 1px solid rgba(0,230,118,0.15); border-radius: 2px;
+      padding: 28px 32px; background: rgba(0,230,118,0.02);
+    }
+    .formula-box .formula-label {
+      font-family: var(--font-mono); font-size: 10px; color: var(--accent);
+      letter-spacing: 0.12em; margin-bottom: 16px;
+    }
+    .formula-box .formula-desc { font-size: 13px; color: var(--muted); line-height: 1.75; margin-top: 16px; }
+
+    /* Method cards — side by side */
+    .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 64px; }
+    .method-card {
+      padding: 32px; border: 1px solid var(--border); border-radius: 2px;
+      background: transparent;
+    }
+    .method-card .method-tag {
+      font-family: var(--font-mono); font-size: 10px; color: var(--accent);
+      letter-spacing: 0.12em; margin-bottom: 16px;
+    }
+    .method-card h3 { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 14px; }
+    .method-card p  { font-size: 14px; color: var(--muted2); line-height: 1.8; margin-bottom: 14px; }
+    .method-card p strong { color: var(--text); font-weight: 500; }
+    .method-card .method-props { display: flex; flex-direction: column; gap: 6px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border); }
+    .method-card .prop { font-family: var(--font-mono); font-size: 11px; color: var(--muted2); letter-spacing: 0.05em; }
+    .method-card .prop span { color: var(--accent); }
+
+    /* Greeks table */
+    .greeks-table {
+      width: 100%; border-collapse: collapse; margin-bottom: 64px;
+      font-family: var(--font-mono); font-size: 13px;
+    }
+    .greeks-table th {
+      text-align: left; padding: 12px 16px;
+      font-size: 10px; letter-spacing: 0.12em; color: var(--accent);
+      border-bottom: 1px solid var(--border);
+    }
+    .greeks-table td {
+      padding: 14px 16px; border-bottom: 1px solid rgba(34,34,34,0.6);
+      color: var(--muted2); vertical-align: top;
+    }
+    .greeks-table td:first-child { color: var(--text); font-weight: 500; }
+    .greeks-table .cost-free  { color: var(--accent); }
+    .greeks-table .cost-reprice { color: #ffd54f; }
+
+    /* Terminal output block */
+    .terminal {
+      background: #0d0d0d; border: 1px solid #2a2a2a; border-radius: 6px;
+      overflow: hidden; margin-bottom: 64px;
+    }
+    .terminal-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 20px; background: #161616; border-bottom: 1px solid #2a2a2a;
+    }
+    .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .terminal-bar .title {
+      font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+      letter-spacing: 0.08em; margin-left: 8px;
+    }
+    .terminal-body { padding: 28px 32px; overflow-x: auto; }
+    .terminal-body pre {
+      font-family: var(--font-mono); font-size: 12.5px; line-height: 1.75;
+      color: #c8c8c8; margin: 0; white-space: pre;
+    }
+    .t-header  { color: #e8e8e8; font-weight: 500; }
+    .t-solver  { color: var(--accent); }
+    .t-spot    { color: #b0bec5; }
+    .t-label   { color: var(--muted); }
+    .t-fd      { color: #c8c8c8; }
+    .t-bs      { color: #80cbc4; }
+    .t-err     { color: #ffd54f; }
+    .t-itm     { color: #ef9a9a; }
+    .t-atm     { color: var(--accent); }
+    .t-otm     { color: #b0bec5; }
+
+    /* Module cards */
+    .module-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 48px; }
+    .module-card { padding: 24px; border: 1px solid var(--border); border-radius: 2px; }
+    .module-card .module-file { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 10px; }
+    .module-card h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .module-card p  { font-size: 13px; color: var(--muted2); line-height: 1.75; }
+
+    @media (max-width: 900px) {
+      .page-hero { padding: 100px 0 40px; }
+      .two-col, .two-col-wide, .method-grid { grid-template-columns: 1fr; }
+      .concept-grid, .concept-grid-5 { grid-template-columns: 1fr 1fr; }
+      .module-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <nav>
+    <a href="../index.html" class="logo">cheymol<span>.io</span></a>
+    <div class="links">
+      <a href="../index.html">profile</a>
+      <a href="finance.html" class="active">finance</a>
+      <a href="tech.html">tech</a>
+      <a href="events.html">events</a>
+      <a href="loop.html">loop</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero fade-up">
+      <div class="page-hero-inner">
+        <a href="finance.html" class="back">← finance projects</a>
+        <div class="meta-row">
+          <span class="meta-badge meta-green">PHASE 0 COMPLETE</span>
+          <span class="meta-badge meta-blue">C++</span>
+          <span class="meta-badge meta-muted">QUANTITATIVE FINANCE</span>
+        </div>
+        <h1>Black-Scholes<br>PDE Pricer</h1>
+        <p class="subtitle">
+          A C++ solver for the Black-Scholes PDE using two independent finite-difference schemes,
+          with full Greeks computation and benchmark against closed-form analytical formulas.
+        </p>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top: 0;">
+
+      <!-- THE PROBLEM -->
+      <div class="section-label"><span>THE PROBLEM</span></div>
+      <div class="two-col-wide" style="margin-bottom: 64px;">
+        <div class="prose">
+          <p>
+            The fair value of a European option does not just pop out of thin air — it satisfies a
+            <strong>partial differential equation</strong>. Under the Black-Scholes model, any derivative
+            $V(t, S)$ written on an asset following Geometric Brownian Motion obeys the BS PDE, a
+            parabolic equation in $(S, t)$ space with a terminal condition at maturity.
+          </p>
+          <p>
+            Solving this PDE numerically gives option prices and Greeks on the <strong>entire
+            $(S, t)$ grid</strong> in a single backwards sweep — far more efficient than running
+            a Monte Carlo simulation for each individual spot price.
+          </p>
+          <p>
+            This project implements two distinct finite-difference schemes — one in native $S$-space,
+            one in log-price space — and validates both against the exact Black-Scholes formulas for
+            price and all five Greeks.
+          </p>
+        </div>
+        <div class="formula-box">
+          <div class="formula-label">BLACK-SCHOLES PDE</div>
+          $$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} + rS\frac{\partial V}{\partial S} - rV = 0$$
+          <div class="formula-desc">
+            Solved backwards in time on a discrete $(S, t)$ grid, from the terminal condition
+            $V(T, S) = \text{Payoff}(S)$ down to $t = 0$.
+          </div>
+        </div>
+      </div>
+
+      <!-- NUMERICAL METHODS -->
+      <div class="section-label"><span>NUMERICAL METHODS</span></div>
+      <div class="method-grid">
+        <div class="method-card">
+          <div class="method-tag">METHOD 01 — Full equation via Crank-Nicholson Scheme</div>
+          <h3>Uniform S-grid</h3>
+          <p>
+            Standard centred finite differences on $S_i = i \cdot \Delta S$ discretise the spatial
+            operator $\mathcal{L}[V]_i = a_i V_{i-1} + b_i V_i + c_i V_{i+1}$, with
+            <strong>variable coefficients</strong> that grow with $S_i$.
+          </p>
+          <p>
+            The Crank-Nicolson scheme averages the implicit and explicit levels at each time step,
+            producing a <strong>tridiagonal system</strong> solved in $O(N)$ via the Thomas algorithm.
+          </p>
+          <div class="method-props">
+            <div class="prop">Accuracy  <span>O(Δt², ΔS²)</span></div>
+            <div class="prop">Stability <span>Unconditionally stable</span></div>
+            <div class="prop">Grid      <span>Uniform in S</span></div>
+          </div>
+        </div>
+        <div class="method-card">
+          <div class="method-tag">METHOD 02 — Reduced Equation via Finite Difference Scheme</div>
+          <h3>Log-price space</h3>
+          <p>
+            The substitution $x = \ln S$ transforms the BS PDE into a
+            <strong>constant-coefficient</strong> equation. The diffusion term loses its $S^2$ growth,
+            and all grid nodes share the same tridiagonal stencil.
+          </p>
+          <p>
+            The log-uniform grid gives <strong>finer relative resolution near the strike</strong>,
+            where the option is most sensitive. After solving in $x$-space, $V(x_i)$ is interpolated
+            back to the uniform $S$-grid for output.
+          </p>
+          <div class="method-props">
+            <div class="prop">Accuracy  <span>O(Δt², Δx²)</span></div>
+            <div class="prop">Stability <span>Unconditionally stable</span></div>
+            <div class="prop">Grid      <span>Log-uniform in S</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GREEKS -->
+      <div class="section-label"><span>GREEKS</span></div>
+      <div class="prose" style="margin-bottom: 28px;">
+        <p>
+          All five Greeks are computed from the solved PDE grid. Delta, Gamma and Theta are recovered
+          for free from spatial finite differences and the PDE identity — no extra solver calls needed.
+          Vega and Rho use bump-and-reprice, each requiring two additional solves.
+        </p>
+      </div>
+
+      <table class="greeks-table" style="margin-bottom: 64px;">
+        <thead>
+          <tr>
+            <th>GREEK</th>
+            <th>DEFINITION</th>
+            <th>METHOD</th>
+            <th>COST</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Delta $\Delta$</td>
+            <td>$\partial V / \partial S$</td>
+            <td>Central FD on solved grid</td>
+            <td class="cost-free">Free</td>
+          </tr>
+          <tr>
+            <td>Gamma $\Gamma$</td>
+            <td>$\partial^2 V / \partial S^2$</td>
+            <td>Central FD on solved grid</td>
+            <td class="cost-free">Free</td>
+          </tr>
+          <tr>
+            <td>Theta $\Theta$</td>
+            <td>$\partial V / \partial t$</td>
+            <td>PDE identity: $\Theta = -\mathcal{L}[V]$</td>
+            <td class="cost-free">Free</td>
+          </tr>
+          <tr>
+            <td>Vega $\nu$</td>
+            <td>$\partial V / \partial \sigma$</td>
+            <td>Bump-and-reprice $\sigma \pm \varepsilon$</td>
+            <td class="cost-reprice">2 solver calls</td>
+          </tr>
+          <tr>
+            <td>Rho $\rho$</td>
+            <td>$\partial V / \partial r$</td>
+            <td>Bump-and-reprice $r \pm \varepsilon$</td>
+            <td class="cost-reprice">2 solver calls</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="prose" style="margin-bottom: 64px; margin-top: -40px;">
+        <p>
+          Theta is recovered directly from the PDE: since $\partial V / \partial t = -\mathcal{L}[V]$,
+          Theta is simply the spatial operator evaluated at the solution — <strong>more accurate than
+          finite-differencing in time</strong> and requires no extra storage.
+        </p>
+      </div>
+
+      <!-- SAMPLE OUTPUT -->
+      <div class="section-label"><span>SAMPLE OUTPUT</span></div>
+      <div class="prose" style="margin-bottom: 28px;">
+        <p>
+          Both solvers run on European Call and Put. For each spot price (OTM, ATM, ITM), the program
+          prints FD price and all five Greeks side-by-side with the closed-form BS values — the error
+          is immediately visible. Parameters: $K = 100$, $T = 1$, $\sigma = 20\%$, $r = 5\%$,
+          $N = M = 1000$.
+        </p>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="terminal-dot" style="background:#ff5f57;"></div>
+          <div class="terminal-dot" style="background:#febc2e;"></div>
+          <div class="terminal-dot" style="background:#28c840;"></div>
+          <span class="title">./pricer</span>
+        </div>
+        <div class="terminal-body">
+<pre><span class="t-header">== European Call  (K=100, T=1, sigma=0.2, r=0.05) ==</span>
+
+<span class="t-solver">  [Crank-Nicolson]</span>
+
+<span class="t-spot">  S = 70.00000  </span><span class="t-otm">[OTM]</span>
+<span class="t-label">    Price  </span><span class="t-fd">FD =   0.43398</span>   <span class="t-bs">BS =   0.44145</span>   <span class="t-err">err =   0.00747</span>
+<span class="t-label">    Delta  </span><span class="t-fd">FD =   0.07487</span>   <span class="t-bs">BS =   0.07588</span>
+<span class="t-label">    Gamma  </span><span class="t-fd">FD =   0.01011</span>   <span class="t-bs">BS =   0.01020</span>
+<span class="t-label">    Theta  </span><span class="t-fd">FD =  -0.00336</span>   <span class="t-bs">BS =  -0.00341</span>  (daily)
+<span class="t-label">    Vega   </span><span class="t-fd">FD =   9.87998</span>   <span class="t-bs">BS =   9.99690</span>
+<span class="t-label">    Rho    </span><span class="t-fd">FD =   4.79958</span>   <span class="t-bs">BS =   4.86983</span>
+
+<span class="t-spot">  S = 100.00000  </span><span class="t-atm">[ATM]</span>
+<span class="t-label">    Price  </span><span class="t-fd">FD =  10.38696</span>   <span class="t-bs">BS =  10.45058</span>   <span class="t-err">err =   0.06362</span>
+<span class="t-label">    Delta  </span><span class="t-fd">FD =   0.63494</span>   <span class="t-bs">BS =   0.63683</span>
+<span class="t-label">    Gamma  </span><span class="t-fd">FD =   0.01881</span>   <span class="t-bs">BS =   0.01876</span>
+<span class="t-label">    Theta  </span><span class="t-fd">FD =  -0.01755</span>   <span class="t-bs">BS =  -0.01757</span>  (daily)
+<span class="t-label">    Vega   </span><span class="t-fd">FD =  37.55202</span>   <span class="t-bs">BS =  37.52403</span>
+<span class="t-label">    Rho    </span><span class="t-fd">FD =  53.04423</span>   <span class="t-bs">BS =  53.23248</span>
+
+<span class="t-spot">  S = 130.00000  </span><span class="t-itm">[ITM]</span>
+<span class="t-label">    Price  </span><span class="t-fd">FD =  35.34514</span>   <span class="t-bs">BS =  35.44027</span>   <span class="t-err">err =   0.09513</span>
+<span class="t-label">    Delta  </span><span class="t-fd">FD =   0.95133</span>   <span class="t-bs">BS =   0.95173</span>
+<span class="t-label">    Gamma  </span><span class="t-fd">FD =   0.00388</span>   <span class="t-bs">BS =   0.00386</span>
+<span class="t-label">    Theta  </span><span class="t-fd">FD =  -0.01568</span>   <span class="t-bs">BS =  -0.01567</span>  (daily)
+<span class="t-label">    Vega   </span><span class="t-fd">FD =  13.11010</span>   <span class="t-bs">BS =  13.03673</span>
+<span class="t-label">    Rho    </span><span class="t-fd">FD =  88.23317</span>   <span class="t-bs">BS =  88.28407</span>
+
+<span class="t-solver">  [ReducedCN (log-space)]</span>
+
+<span class="t-spot">  S = 100.00000  </span><span class="t-atm">[ATM]</span>
+<span class="t-label">    Price  </span><span class="t-fd">FD =  10.38700</span>   <span class="t-bs">BS =  10.45058</span>   <span class="t-err">err =   0.06359</span>
+<span class="t-label">    Delta  </span><span class="t-fd">FD =   0.63446</span>   <span class="t-bs">BS =   0.63683</span>
+<span class="t-label">    Gamma  </span><span class="t-fd">FD =   0.02686</span>   <span class="t-bs">BS =   0.01876</span>
+<span class="t-label">    Theta  </span><span class="t-fd">FD =  -0.02195</span>   <span class="t-bs">BS =  -0.01757</span>  (daily)
+<span class="t-label">    Vega   </span><span class="t-fd">FD =  37.55322</span>   <span class="t-bs">BS =  37.52403</span>
+<span class="t-label">    Rho    </span><span class="t-fd">FD =  53.04584</span>   <span class="t-bs">BS =  53.23248</span></pre>
+        </div>
+      </div>
+
+      <!-- ROADMAP -->
+      <div class="section-label"><span>ROADMAP</span></div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div>
+          <div style="padding: 28px; border: 1px solid var(--border); border-radius: 2px; margin-bottom: 16px;">
+            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 10px;">PHASE 0 — DONE</div>
+            <p style="font-size: 14px; color: var(--muted2); line-height: 1.8;">European Call &amp; Put · Two FD schemes · Full Greeks (Δ, Γ, θ, ν, ρ) · Analytical validation · Polymorphic architecture</p>
+          </div>
+          <div style="padding: 28px; border: 1px solid var(--border); border-radius: 2px; opacity: 0.5;">
+            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 10px;">PHASE 1 — NEXT</div>
+            <p style="font-size: 14px; color: var(--muted2); line-height: 1.8;">Exotic options — digital payoffs, knock-out barriers, American puts via PSOR · SDL2 interactive visualisation of $V(S)$ and Greek curves</p>
+          </div>
+        </div>
+        <div style="padding: 28px; border: 1px solid rgba(0,230,118,0.12); border-radius: 2px; background: rgba(0,230,118,0.02);">
+          <p style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 16px;">ON GITHUB</p>
+          <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin-bottom: 24px;">Full source code, Makefile and documentation available on GitHub.</p>
+          <a href="https://github.com/williamcheymol/bs-pricing" class="btn btn-ghost">View on GitHub ↗</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2026 William Cheymol</span>
+    <a href="https://github.com/williamcheymol" style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); text-decoration: none; letter-spacing: 0.1em;">github.com/williamcheymol</a>
+  </footer>
+
+  <script>
+    (function(){
+      var sel = '.concept-box, .module-card, .method-card, .two-col > *, .two-col-wide > *, .formula-box, .terminal, .greeks-table, .prose';
+      document.querySelectorAll(sel).forEach(function(el){ el.classList.add('reveal'); });
+      document.querySelectorAll('.concept-grid, .module-grid, .method-grid').forEach(function(g){
+        Array.from(g.children).forEach(function(c,i){ c.style.transitionDelay = (i*70)+'ms'; });
+      });
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+      }, {threshold:0.06, rootMargin:'0px 0px -28px 0px'});
+      document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    })();
+  </script>
+</body>
+</html>

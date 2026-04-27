@@ -48,6 +48,13 @@
       font-family: var(--font-mono); font-size: 12px;
       color: var(--accent); letter-spacing: 0.12em;
     }
+    .project-status {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 0.1em; padding: 4px 12px; border-radius: 2px;
+    }
+    .status-done { color: var(--accent) !important;  border: 1px solid rgba(0,230,118,0.25); }
+    .status-wip  { color: #ffd54f !important;        border: 1px solid rgba(255,213,79,0.25); }
+    .status-soon { color: var(--muted) !important;   border: 1px solid var(--border); }
     .project-card h3 {
       font-size: 19px; font-weight: 600; color: var(--text); margin-bottom: 12px;
     }
@@ -136,7 +143,7 @@
             <span class="project-num">01</span>
             <span class="project-status status-done">PHASE 1 COMPLETE</span>
           </div>
-          <h3>Option Pricing & Hedging Simulation</h3>
+          <h3>Delta &amp; Gamma<br>Hedging Simulation</h3>
           <p>
             European option pricing under Geometric Brownian Motion via Monte Carlo, with repo rate modeling for realistic forward pricing. Implemented and compared Delta vs Delta-Gamma hedging on equity and FX underlyings. Analyzed hedging error distribution and transaction cost impact on P&amp;L. Interactive Jupyter widgets for Greeks sensitivity (Δ, Γ, ν, θ).
           </p>
@@ -149,22 +156,23 @@
           </div>
         </a>
 
-        <div class="project-card">
+        <a href="bs-pricing.html" class="project-card" style="text-decoration:none;color:inherit;display:block;">
           <div class="project-top">
             <span class="project-num">02</span>
-            <span class="project-status status-wip">IN PROGRESS</span>
+            <span class="project-status status-done">PHASE 0 COMPLETE</span>
           </div>
-          <h3>Black-Scholes PDE Solver</h3>
+          <h3>Black-Scholes PDE Pricer</h3>
           <p>
-            Numerical resolution of the Black-Scholes PDE on a (S, t) grid using the Crank-Nicolson finite difference scheme. Tridiagonal system solved via the Thomas algorithm for efficient computation. Results benchmarked against the closed-form BS formula and explicit finite difference scheme.
+            Two finite-difference schemes (Crank-Nicolson + log-space) solving the BS PDE on a (S, t) grid. Full Greeks (Δ, Γ, θ, ν, ρ) via spatial FD and bump-and-reprice. Benchmarked against closed-form analytical formulas.
           </p>
           <div class="tags">
             <span class="tag">C++</span>
             <span class="tag">PDE</span>
+            <span class="tag">Greeks</span>
             <span class="tag">Crank-Nicolson</span>
             <span class="tag">Finite Difference</span>
           </div>
-        </div>
+        </a>
 
         <div class="project-card coming-soon">
           <div class="project-top">
