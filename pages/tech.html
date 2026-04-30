@@ -58,6 +58,7 @@
       background: transparent; transition: background 0.2s, border-color 0.2s;
     }
     .project-card:hover { background: var(--bg2); border-color: #333; }
+    .project-card.wip {pointer-events: none;}
     .project-card.coming-soon { opacity: 0.4; pointer-events: none; }
     .project-top {
       display: flex; justify-content: space-between; align-items: flex-start;
@@ -193,9 +194,26 @@
           </div>
         </a>
 
-        <div class="project-card coming-soon">
+        <div class="project-card wip">
           <div class="project-top">
             <span class="project-num">03</span>
+            <span class="project-status status-wip">IN PROGRESS</span>
+          </div>
+          <h3>Market Data Fetcher</h3>
+          <p>
+            Python tool to pull, clean and structure historical market data via yfinance — prices, volumes, dividends — exported in formats directly usable for quant analysis and backtesting.
+          </p>
+          <div class="tags">
+            <span class="tag blue">Python</span>
+            <span class="tag blue">yfinance</span>
+            <span class="tag blue">Pandas</span>
+            <span class="tag blue">CLI</span>
+          </div>
+        </div>
+
+        <div class="project-card coming-soon">
+          <div class="project-top">
+            <span class="project-num">04</span>
             <span class="project-status status-soon">SOON</span>
           </div>
           <h3>Portfolio Risk Dashboard</h3>
@@ -207,23 +225,6 @@
             <span class="tag blue">Python</span>
             <span class="tag blue">Streamlit</span>
             <span class="tag blue">Risk</span>
-          </div>
-        </div>
-
-        <div class="project-card coming-soon">
-          <div class="project-top">
-            <span class="project-num">04</span>
-            <span class="project-status status-soon">SOON</span>
-          </div>
-          <h3>Market Data Fetcher</h3>
-          <p>
-            Python tool to pull, clean and structure historical market data via yfinance — prices, volumes, dividends — exported in formats directly usable for quant analysis and backtesting.
-          </p>
-          <div class="tags">
-            <span class="tag blue">Python</span>
-            <span class="tag blue">yfinance</span>
-            <span class="tag blue">Pandas</span>
-            <span class="tag blue">CLI</span>
           </div>
         </div>
 
