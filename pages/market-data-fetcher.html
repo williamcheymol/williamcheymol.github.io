@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Market Data Fetcher · William Cheymol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="icon" type="image/png" href="../assets/images/Avatar.png"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ]
+    });"></script>
+  <style>
+    .page-hero {
+      padding: 120px 0 60px; position: relative;
+    }
+    .page-hero .back {
+      font-family: var(--font-mono); font-size: 13px;
+      color: var(--muted); text-decoration: none; letter-spacing: 0.1em;
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-bottom: 44px; transition: color 0.2s;
+    }
+    .page-hero .back:hover { color: var(--text); }
+    .page-hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .page-hero .subtitle {
+      font-size: 17px; color: var(--muted2); max-width: 580px; line-height: 1.85;
+    }
+
+    /* Meta badges */
+    .meta-row {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .meta-badge {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+      padding: 5px 14px; border-radius: 2px;
+    }
+    .meta-grade { color: #00e676; border: 1px solid rgba(0,230,118,0.25); }
+    .meta-wip   { color: #ffd54f; border: 1px solid rgba(255,213,79,0.3); background: rgba(255,213,79,0.04); }
+    .meta-year  { color: var(--muted2); border: 1px solid var(--border); }
+    .meta-field { color: var(--accent2); border: 1px solid rgba(0,176,255,0.25); }
+
+    /* Section prose */
+    .prose p {
+      font-size: 16px; color: var(--muted2); line-height: 1.9; margin-bottom: 18px;
+      max-width: 780px;
+    }
+    .prose p strong { color: var(--text); font-weight: 500; }
+
+    /* Two-col layout */
+    .two-col {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;
+    }
+    .two-col-wide {
+      display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: start;
+    }
+
+    /* Module cards */
+    .module-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+      margin-bottom: 48px;
+    }
+    .module-card {
+      padding: 28px 28px; border: 1px solid var(--border); border-radius: 2px;
+    }
+    .module-card .module-file {
+      font-family: var(--font-mono); font-size: 11px; color: var(--accent);
+      letter-spacing: 0.12em; margin-bottom: 10px;
+    }
+    .module-card h4 {
+      font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 8px;
+    }
+    .module-card p {
+      font-size: 13px; color: var(--muted2); line-height: 1.75;
+    }
+    .module-card p strong { color: var(--text); font-weight: 500; }
+
+    /* Pipeline arrow row */
+    .pipeline-row {
+      display: flex; align-items: center; gap: 0;
+      margin-bottom: 48px; overflow-x: auto;
+    }
+    .pipe-step {
+      flex: 1; min-width: 120px;
+      padding: 20px 18px; border: 1px solid var(--border); border-radius: 2px;
+      text-align: center;
+    }
+    .pipe-step .pipe-file {
+      font-family: var(--font-mono); font-size: 10px; color: var(--accent);
+      letter-spacing: 0.1em; margin-bottom: 8px;
+    }
+    .pipe-step .pipe-label {
+      font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px;
+    }
+    .pipe-step .pipe-desc {
+      font-size: 11px; color: var(--muted); line-height: 1.6;
+    }
+    .pipe-arrow {
+      font-family: var(--font-mono); font-size: 18px; color: var(--border);
+      padding: 0 10px; flex-shrink: 0;
+    }
+
+    /* Formula box */
+    .formula-box {
+      border: 1px solid rgba(0,230,118,0.15); border-radius: 2px;
+      padding: 28px 32px; background: rgba(0,230,118,0.02);
+      margin-bottom: 14px;
+    }
+    .formula-box .formula-label {
+      font-family: var(--font-mono); font-size: 10px; color: var(--accent);
+      letter-spacing: 0.12em; margin-bottom: 16px;
+    }
+    .formula-box .formula-desc {
+      font-size: 13px; color: var(--muted); line-height: 1.75; margin-top: 14px;
+    }
+    .formula-box .formula-desc strong { color: var(--text); font-weight: 500; }
+
+    /* Output table */
+    .output-table {
+      width: 100%; border-collapse: collapse; margin-bottom: 48px;
+    }
+    .output-table th {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+      color: var(--muted); text-align: left; padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .output-table td {
+      font-size: 14px; color: var(--muted2); padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top;
+    }
+    .output-table td:first-child {
+      font-family: var(--font-mono); font-size: 12px; color: var(--accent);
+      white-space: nowrap;
+    }
+    .output-table tr:hover td { background: var(--bg2); }
+
+    /* Concept boxes */
+    .concept-grid   { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 48px; }
+    .concept-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 48px; }
+    .concept-box { padding: 24px; border: 1px solid var(--border); border-radius: 2px; }
+    .concept-box .concept-key { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 10px; }
+    .concept-box .concept-val { font-size: 13px; color: var(--muted2); line-height: 1.75; }
+    .concept-box .concept-val strong { color: var(--text); font-weight: 500; }
+
+    /* Steps */
+    .steps { display: flex; flex-direction: column; gap: 0; }
+    .step {
+      display: flex; gap: 20px; padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step-num {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--accent); letter-spacing: 0.12em;
+      padding-top: 2px; flex-shrink: 0; min-width: 32px;
+    }
+    .step-content h4 {
+      font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px;
+    }
+    .step-content p {
+      font-size: 14px; color: var(--muted2); line-height: 1.75;
+    }
+    .step-content p strong { color: var(--text); font-weight: 500; }
+
+    @media (max-width: 900px) {
+      .page-hero { padding: 100px 0 40px; }
+      .two-col, .two-col-wide { grid-template-columns: 1fr; }
+      .module-grid { grid-template-columns: 1fr; }
+      .pipeline-row { flex-direction: column; }
+      .pipe-arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <nav>
+    <a href="../index.html" class="logo">cheymol<span>.io</span></a>
+    <div class="links">
+      <a href="../index.html">profile</a>
+      <a href="finance.html">finance</a>
+      <a href="tech.html" class="active">tech</a>
+      <a href="events.html">events</a>
+      <a href="loop.html">loop</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero fade-up">
+      <div class="page-hero-inner">
+        <a href="tech.html" class="back">← tech projects</a>
+        <div class="meta-row">
+          <span class="meta-badge meta-field">QUANT DATA</span>
+          <span class="meta-badge meta-field">PYTHON</span>
+        </div>
+        <h1>Market Data<br>Fetcher</h1>
+        <p class="subtitle">
+          A reusable Python data layer for quantitative finance — pulling, cleaning and structuring historical market data via yfinance into formats ready for backtesting and analysis.
+        </p>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top: 0;">
+
+      <!-- Context -->
+      <div class="section-label"><span>THE PROBLEM</span></div>
+      <div style="margin-bottom: 64px;">
+        <div class="prose">
+          <p>
+            Quantitative finance projects — pricers, hedging simulations, risk models — all share a common need: <strong>clean, structured price data</strong>. Yet sourcing and preparing that data is always the same tedious work: download from an API, handle errors, clean NaNs and splits, compute returns.
+          </p>
+          <p>
+            The goal of this project is to build that layer once and build it right — a <strong>modular pipeline</strong> that takes a ticker and a date range as input, and outputs a clean DataFrame enriched with the financial features that quant analysis actually needs.
+          </p>
+          <p>
+            It works on <strong>any ticker supported by yfinance</strong> — stocks, ETFs, indices, crypto, forex — and handles the full cleaning chain automatically: duplicate dates, invalid prices, missing values, dividend and split adjustments. The output is a clean, enriched DataFrame ready for downstream use, with no post-processing required.
+          </p>
+          <p>
+            It is designed as a <strong>reusable foundation</strong> for the broader project series — the delta-hedging simulation and the BS pricer both rely on exactly this kind of structured data.
+          </p>
+        </div>
+      </div>
+
+      <!-- Pipeline -->
+      <div class="section-label"><span>PIPELINE ARCHITECTURE</span></div>
+      <div class="pipeline-row" style="margin-bottom: 32px;">
+        <div class="pipe-step">
+          <div class="pipe-file">fetcher/download.py</div>
+          <div class="pipe-label">Download</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="pipe-file">cleaner/pipeline.py</div>
+          <div class="pipe-label">Clean</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="pipe-file">features/compute.py</div>
+          <div class="pipe-label">Compute</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="pipe-file">exporter/export.py</div>
+          <div class="pipe-label">Export</div>
+        </div>
+      </div>
+
+      <div class="module-grid">
+        <div class="module-card">
+          <div class="module-file">fetcher/download.py</div>
+          <h4>Download</h4>
+          <p>
+            <code style="font-family:var(--font-mono);font-size:12px;color:var(--accent);">download_single()</code> and <code style="font-family:var(--font-mono);font-size:12px;color:var(--accent);">download_multiple()</code> — pull OHLCV data from Yahoo Finance with <strong>auto_adjust=True</strong> (corrects for dividends and splits). Multi-ticker loop skips failing tickers gracefully instead of crashing. Handles MultiIndex columns that yfinance sometimes produces.
+          </p>
+        </div>
+        <div class="module-card">
+          <div class="module-file">cleaner/pipeline.py</div>
+          <h4>Clean</h4>
+          <p>
+            Four sequential steps: <strong>remove duplicate dates</strong> (keeping last), <strong>remove invalid prices</strong> (zero or negative close), <strong>fill missing values</strong> via forward-fill (last known price), then <strong>standardise column names</strong> to lowercase OHLCV across all ticker types. A single NaN propagates downstream — cleaning is not optional.
+          </p>
+        </div>
+        <div class="module-card">
+          <div class="module-file">features/compute.py</div>
+          <h4>Features</h4>
+          <p>
+            Computes <strong>log-returns</strong> $r_t = \log(S_t/S_{t-1})$, <strong>rolling realised volatility</strong> (annualised by $\sqrt{252}$, 21-day window), and <strong>cumulative returns</strong> $\exp(\sum r_i) - 1$. All features connect directly to the Black-Scholes / GBM framework used in the delta-hedging project.
+          </p>
+        </div>
+        <div class="module-card">
+          <div class="module-file">exporter/export.py</div>
+          <h4>Export</h4>
+          <p>
+            Saves one <strong>CSV per ticker</strong> to the <code style="font-family:var(--font-mono);font-size:12px;color:var(--accent);">results/</code> folder. The output format is designed for direct consumption by backtesting engines, numerical pricers, or ML pipelines — no post-processing required.
+          </p>
+        </div>
+      </div>
+
+      <!-- Technical notes -->
+      <div class="section-label"><span>KEY TECHNICAL CHOICES</span></div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div class="formula-box">
+          <div class="formula-label">LOG-RETURNS</div>
+          $$r_t = \log\!\left(\frac{S_t}{S_{t-1}}\right)$$
+          <div class="formula-desc">
+            Preferred over simple returns because they are <strong>additive across time</strong>: $r(0 \to T) = \sum r(t \to t+1)$. Approximately normally distributed and directly compatible with Black-Scholes / GBM assumptions — the same increments used in the delta-hedging Monte Carlo paths.
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula-label">REALISED VOLATILITY</div>
+          $$\hat{\sigma}_t = \sqrt{252} \cdot \text{std}_{[t-21,\, t]}(r)$$
+          <div class="formula-desc">
+            Rolling standard deviation of log-returns, annualised by $\sqrt{252}$. Measures what the market <strong>actually did</strong>, as opposed to implied volatility (what the market expects). The gap between the two is the foundation of volatility smile analysis.
+          </div>
+        </div>
+      </div>
+
+      <!-- Output example -->
+      <div class="section-label"><span>OUTPUT — AAPL_data.csv (extract)</span></div>
+      <div style="margin-bottom: 64px; background: #0a0a0a; border: 1px solid var(--border); border-radius: 2px; overflow-x: auto;">
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.1em; padding: 14px 20px; border-bottom: 1px solid var(--border);">results/AAPL_data.csv</div>
+        <table style="width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; white-space: nowrap;">
+          <thead>
+            <tr style="border-bottom: 1px solid #1e1e1e;">
+              <th style="padding: 10px 20px; text-align: left; color: #444; font-weight: 400;">date</th>
+              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">open</th>
+              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">high</th>
+              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">low</th>
+              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">close</th>
+              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">volume</th>
+              <th style="padding: 10px 16px; text-align: right; color: var(--accent); font-weight: 400;">log_return</th>
+              <th style="padding: 10px 16px; text-align: right; color: var(--accent); font-weight: 400;">realised_vol</th>
+              <th style="padding: 10px 16px; text-align: right; color: var(--accent); font-weight: 400;">cumulative_return</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid #111;">
+              <td style="padding: 10px 20px; color: #555;">2020-02-03</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">73.35</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">75.57</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">72.85</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">74.40</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">173 788 400</td>
+              <td style="padding: 10px 16px; text-align: right; color: #ff6b6b;">-0.00275</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--accent);">0.2756</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--accent);">0.0277</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #111;">
+              <td style="padding: 10px 20px; color: #555;">2020-02-04</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">76.01</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">77.05</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">75.60</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">76.86</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">136 616 400</td>
+              <td style="padding: 10px 16px; text-align: right; color: #00e676;">+0.03248</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--accent);">0.2926</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--accent);">0.0616</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #111;">
+              <td style="padding: 10px 20px; color: #555;">2020-02-05</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">77.99</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">78.28</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">76.88</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">77.49</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">118 826 800</td>
+              <td style="padding: 10px 16px; text-align: right; color: #00e676;">+0.00812</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--accent);">0.2926</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--accent);">0.0703</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 20px; color: #555;">2020-02-06</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">77.76</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">78.40</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">77.20</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">78.39</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">105 425 600</td>
+              <td style="padding: 10px 16px; text-align: right; color: #00e676;">+0.01163</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--accent);">0.2924</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--accent);">0.0828</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="padding: 10px 20px; font-family: var(--font-mono); font-size: 10px; color: #333; border-top: 1px solid #111;">
+          1 258 rows · AAPL · 2020-01-02 → 2024-12-31
+        </div>
+      </div>
+
+      <!-- Roadmap -->
+      <div class="section-label"><span>ROADMAP</span></div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div>
+          <div style="padding: 24px 28px; border: 1px solid rgba(0,230,118,0.2); border-radius: 2px; background: rgba(0,230,118,0.02); margin-bottom: 16px;">
+            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 0 — DONE</div>
+            <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">OHLCV download for any ticker · Auto-adjustment for dividends &amp; splits · Multi-ticker with graceful error handling · Cleaning pipeline (duplicates, invalid prices, NaN) · Log-returns, realised vol, cumulative returns · CSV export · 28 unit tests</p>
+          </div>
+          <div style="padding: 24px 28px; border: 1px solid var(--border); border-radius: 2px; opacity: 0.55;">
+            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 10px;">PHASE 1 — NEXT</div>
+            <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">Sharpe ratio, max drawdown, and other risk metrics · Visualisation tools</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Source code CTA -->
+      <div style="padding: 32px; border: 1px solid var(--border); border-radius: 2px; display: flex; justify-content: space-between; align-items: center; gap: 64px;">
+        <div style="flex-shrink: 0;">
+          <p style="font-family: var(--font-mono); font-size: 11px; color: var(--accent2); letter-spacing: 0.12em; margin-bottom: 8px;">SOURCE CODE</p>
+          <p style="font-size: 14px; color: var(--muted2);">Full pipeline on GitHub — yfinance download,<br>cleaning, feature computation, CSV export, 28 unit tests.</p>
+        </div>
+        <a href="https://github.com/williamcheymol/market-data-fetcher" class="btn btn-ghost" style="white-space: nowrap; flex-shrink: 0;">github.com/williamcheymol/market-data-fetcher ↗</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2026 William Cheymol</span>
+    <a href="https://github.com/williamcheymol" style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); text-decoration: none; letter-spacing: 0.1em;">github.com/williamcheymol</a>
+  </footer>
+
+  <script>
+    (function(){
+      var sel = '.concept-box, .formula-box, .module-card, .pipe-step, .step, .two-col, .two-col-wide';
+      document.querySelectorAll(sel).forEach(function(el){ el.classList.add('reveal'); });
+      document.querySelectorAll('.concept-grid, .concept-grid-4, .module-grid').forEach(function(g){
+        Array.from(g.children).forEach(function(c,i){ c.style.transitionDelay = (i*70)+'ms'; });
+      });
+      document.querySelectorAll('.steps').forEach(function(g){
+        Array.from(g.querySelectorAll('.step')).forEach(function(c,i){ c.style.transitionDelay = (i*60)+'ms'; });
+      });
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+      }, {threshold:0.06, rootMargin:'0px 0px -28px 0px'});
+      document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    })();
+  </script>
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
