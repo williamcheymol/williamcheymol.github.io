@@ -166,7 +166,7 @@
       <div class="page-hero-inner">
         <a href="finance.html" class="back">← finance projects</a>
         <div class="meta-row">
-          <span class="meta-badge meta-green">PHASE 2 COMPLETE</span>
+          <span class="meta-badge meta-green">PHASE 3 COMPLETE</span>
           <span class="meta-badge meta-blue">C++</span>
           <span class="meta-badge meta-blue">SDL2</span>
           <span class="meta-badge meta-muted">QUANTITATIVE FINANCE</span>
@@ -208,7 +208,7 @@
       </div>
 
       <!-- NUMERICAL METHODS -->
-      <div class="section-label"><span>NUMERICAL METHODS — PHASE 0</span></div>
+      <div class="section-label"><span>NUMERICAL METHODS — PHASE 1</span></div>
       <div class="method-grid">
         <div class="method-card">
           <div class="method-tag">METHOD 01 — Crank-Nicolson on uniform S-grid</div>
@@ -241,7 +241,7 @@
       </div>
 
       <!-- GREEKS -->
-      <div class="section-label"><span>GREEKS — PHASE 0</span></div>
+      <div class="section-label"><span>GREEKS — PHASE 1</span></div>
       <div class="prose" style="margin-bottom: 28px;">
         <p>
           All five Greeks are computed from the solved grid. Delta, Gamma and Theta come for free —
@@ -264,7 +264,7 @@
       </table>
 
       <!-- EXOTIC OPTIONS -->
-      <div class="section-label"><span>EXOTIC OPTIONS — PHASE 1</span></div>
+      <div class="section-label"><span>EXOTIC OPTIONS — PHASE 2</span></div>
       <div class="prose" style="margin-bottom: 28px;">
         <p>
           Phase 1 extends the pricer to four exotic payoff types, each requiring a specific
@@ -312,7 +312,7 @@
       </div>
 
       <!-- VISUALIZER -->
-      <div class="section-label"><span>INTERACTIVE VISUALIZER — PHASE 2</span></div>
+      <div class="section-label"><span>INTERACTIVE VISUALIZER — PHASE 3</span></div>
       <div class="prose" style="margin-bottom: 32px;">
         <p>
           An SDL2 window that runs the CN solver live and redraws the price curve whenever
@@ -436,24 +436,24 @@
       <div class="two-col" style="margin-bottom: 64px;">
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div style="padding: 24px 28px; border: 1px solid rgba(0,230,118,0.2); border-radius: 2px; background: rgba(0,230,118,0.02);">
-            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 0 — DONE</div>
+            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 1 — DONE</div>
             <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">Two finite-difference schemes (Crank-Nicolson + ReducedCN in log-space) solving the BS PDE on a $(S, t)$ grid. Full Greeks (Δ, Γ, θ, ν, ρ) via spatial FD, PDE identity, and bump-and-reprice. Benchmarked against closed-form analytical formulas.</p>
           </div>
           <div style="padding: 24px 28px; border: 1px solid rgba(0,230,118,0.2); border-radius: 2px; background: rgba(0,230,118,0.02);">
-            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 1 — DONE</div>
+            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 2 — DONE</div>
             <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">Four exotic payoffs: Digital Call &amp; Put with Gibbs smoothing, American Put with early-exercise projection, Up-and-Out Call and Down-and-Out Put with knock-out boundary conditions.</p>
           </div>
           <div style="padding: 24px 28px; border: 1px solid rgba(0,230,118,0.2); border-radius: 2px; background: rgba(0,230,118,0.02);">
-            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 2 — DONE</div>
+            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 3 — DONE</div>
             <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">SDL2 real-time visualizer with 6 display modes, live parameter controls, mouse hover crosshair, and solver toggle (CN ↔ ReducedCN). Dirty-flag architecture separates PDE solve from rendering.</p>
           </div>
           <div style="padding: 24px 28px; border: 1px solid var(--border); border-radius: 2px; opacity: 0.55;">
-            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 3 — NEXT</div>
+            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 4 — NEXT</div>
             <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">Real market data — implied vol extraction, volatility smile &amp; surface construction, model validation vs live quotes, Dupire local-vol calibration. On hold pending a market data fetcher project.</p>
           </div>
         </div>
         <div style="padding: 28px; border: 1px solid var(--border); border-radius: 2px;">
-          <p style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 12px;">PHASE 3 DEPENDENCY</p>
+          <p style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 12px;">PHASE 4 DEPENDENCY</p>
           <p style="font-size: 13px; color: var(--muted); line-height: 1.75; margin: 0;">Phase 3 is on hold pending a separate <strong style="color:var(--muted2)">market data fetcher</strong> project (in development) that will supply live option chains and historical price series.</p>
         </div>
       </div>
