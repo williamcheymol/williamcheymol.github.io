@@ -108,12 +108,13 @@
       <div class="page-hero-inner">
         <a href="finance.html" class="back">← finance projects</a>
         <div class="meta-row">
+          <span class="meta-badge meta-grade">COMPLETE</span>
           <span class="meta-badge meta-field">QUANTITATIVE FINANCE</span>
           <span class="meta-badge meta-field">PYTHON</span>
         </div>
         <h1>Delta &amp; Gamma<br>Hedging Simulation</h1>
         <p class="subtitle">
-          A self-contained Python simulation of European option hedging under Black-Scholes — from GBM path generation to P&amp;L attribution, with an interactive Plotly dashboard.
+          A Python simulation of European option hedging under Black-Scholes — from GBM path generation to P&amp;L attribution, extended with a live implied volatility surface built from real SPY option chains.
         </p>
       </div>
     </div>
@@ -131,7 +132,7 @@
             In theory, continuous rebalancing under Black-Scholes replicates the option perfectly — the P&amp;L is zero on every path. In practice, hedging is discrete (daily, weekly), which introduces a residual <strong>tracking error</strong> that shrinks as rebalancing becomes more frequent.
           </p>
           <p>
-            This project simulates both <strong>delta hedging</strong> and <strong>delta-gamma hedging</strong> across thousands of Monte Carlo paths, quantifying the error, studying the effect of rebalancing frequency, and decomposing the P&amp;L into gamma and theta contributions.
+            This project simulates both <strong>delta hedging</strong> and <strong>delta-gamma hedging</strong> across up to 1,000,000 Monte Carlo paths, quantifying the error, studying the effect of rebalancing frequency, decomposing the P&amp;L into gamma and theta contributions — and comparing flat-vol results against a live implied volatility surface.
           </p>
         </div>
         <div>
@@ -157,13 +158,20 @@
                 <p>Measure hedging error across frequencies, vol mismatches, and option types. Verify the <strong>1/√n</strong> convergence law.</p>
               </div>
             </div>
+            <div class="step">
+              <span class="step-num">04</span>
+              <div class="step-content">
+                <h4>Real market vol surface</h4>
+                <p>Download live SPY option chains via yfinance. Fit an <strong>RBF implied vol surface</strong> and re-run the simulation — quantifying how the volatility smile degrades the flat-vol hedge.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Black-Scholes -->
       <div class="section-label"><span>BLACK-SCHOLES FRAMEWORK</span></div>
-      <div class="two-col" style="margin-bottom: 64px;">
+      <div class="two-col" style="margin-bottom: 24px;">
         <div class="prose">
           <p>
             Under Black-Scholes, the stock price follows a <strong>Geometric Brownian Motion</strong>:
@@ -180,6 +188,12 @@
           $$d_1 = \frac{\ln(S/K) + (r + \sigma^2/2)\,T}{\sigma\sqrt{T}}, \quad d_2 = d_1 - \sigma\sqrt{T}$$
           <div class="formula-desc">Put price follows from put-call parity: $P = C - S + Ke^{-rT}$.</div>
         </div>
+      </div>
+      <div style="margin-bottom: 64px;">
+        <div class="img-frame">
+          <img src="../assets/deltahedging/Pricing.png" alt="Black-Scholes call and put pricing"/>
+        </div>
+        <p class="img-caption">BLACK-SCHOLES PRICING — call &amp; put price vs spot, ATM strike K = 100</p>
       </div>
 
       <!-- Greeks -->
@@ -220,16 +234,16 @@
         <div>
           <div class="prose">
             <p>
-              The simulation generates 1,000 GBM paths over 252 daily steps. Each path is paired with its <strong>antithetic counterpart</strong> — the same random draw $Z$ and $-Z$ — which cancels noise algebraically and halves variance with no extra computation.
+              The simulation scales to 1,000,000 GBM paths, generated in chunks of 50,000 to cap memory usage under 200 MB regardless of path count. Each path is paired with its <strong>antithetic counterpart</strong> — the same random draw $Z$ and $-Z$ — which cancels noise algebraically and halves variance with no extra computation.
             </p>
             <p>
-              The hedging loop iterates over <strong>time steps</strong>, operating on all 1,000 paths simultaneously as numpy arrays. This removes the outer path loop and gives a ~100× speedup over a naive nested loop.
+              The hedging loop iterates over <strong>time steps</strong>, operating on all paths simultaneously as numpy arrays. This removes the outer path loop and gives a ~100× speedup over a naive nested loop.
             </p>
           </div>
           <div class="concept-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 0;">
             <div class="concept-box">
               <div class="concept-key">PATHS</div>
-              <div class="concept-val"><strong>1,000</strong> Monte Carlo trajectories, seeded for reproducibility.</div>
+              <div class="concept-val"><strong>1,000,000</strong> Monte Carlo trajectories, chunk-based (50k/chunk, ~200 MB peak).</div>
             </div>
             <div class="concept-box">
               <div class="concept-key">STEPS</div>
@@ -247,18 +261,31 @@
 
       <!-- Hedging -->
       <div class="section-label"><span>DELTA HEDGING</span></div>
-      <div class="two-col" style="margin-bottom: 64px;">
+      <div class="two-col" style="margin-bottom: 24px;">
         <div>
           <div class="img-frame">
             <img src="../assets/deltahedging/Distribution.png" alt="P&L distribution"/>
           </div>
-          <p class="img-caption">P&L DISTRIBUTION — daily rebalancing, 1,000 paths</p>
+          <p class="img-caption">P&L DISTRIBUTION — daily rebalancing, 1,000,000 paths</p>
         </div>
         <div class="prose">
           <p>
             At each rebalancing step, the hedger adjusts the share position to $\Delta(t, S_t)$. With <strong>continuous rebalancing</strong>, the residual P&amp;L is exactly zero. With discrete rebalancing, the tracking error scales as:
             $$\text{error} \propto \sigma \sqrt{\frac{T}{n}}$$
             Halving the interval cuts the error by ~30%. The distribution should be centered on zero — a biased mean signals model miscalibration.
+          </p>
+        </div>
+      </div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div>
+          <div class="img-frame">
+            <img src="../assets/deltahedging/Errors.png" alt="Hedging error vs rebalancing frequency"/>
+          </div>
+          <p class="img-caption">ERROR VS FREQUENCY — simulated error vs 1/√n theoretical</p>
+        </div>
+        <div class="prose">
+          <p>
+            The empirical hedging error matches the theoretical <strong>1/√n</strong> convergence law closely across all tested frequencies — from annual to daily rebalancing. This confirms the simulation is correctly calibrated and that the only path to tighter hedges, given fixed parameters, is to rebalance more often.
           </p>
         </div>
       </div>
@@ -289,12 +316,12 @@
 
       <!-- P&L Attribution -->
       <div class="section-label"><span>P&amp;L ATTRIBUTION</span></div>
-      <div class="two-col" style="margin-bottom: 64px;">
+      <div class="two-col" style="margin-bottom: 24px;">
         <div>
           <div class="img-frame" style="margin-bottom: 14px;">
             <img src="../assets/deltahedging/P&L Attribution.png" alt="P&L Attribution"/>
           </div>
-          <p class="img-caption">P&L ATTRIBUTION — gamma vs theta, mean over 1,000 paths</p>
+          <p class="img-caption">P&L ATTRIBUTION — gamma vs theta, mean over 1,000,000 paths</p>
         </div>
         <div class="prose">
           <p>
@@ -310,42 +337,86 @@
           </p>
         </div>
       </div>
-
-      <!-- Key results table -->
-      <div class="section-label"><span>MAIN RESULTS</span></div>
-      <div class="concept-grid-4" style="margin-bottom: 64px;">
-        <div class="concept-box">
-          <div class="concept-key">DAILY ERROR</div>
-          <div class="concept-val"><strong style="font-size: 22px; color: var(--text);">~4.1%</strong><br>1,000 paths, n=252</div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div class="prose">
+          <p>
+            Sweeping $\sigma_{\text{hedge}}$ while keeping $\sigma_{\text{real}}$ fixed reveals a sharp crossover: the mean P&amp;L is positive when the hedger underestimates vol (long gamma) and negative when they overestimate it (short gamma). The width of the distribution grows symmetrically away from the calibrated point — <strong>any vol mismatch costs money</strong>.
+          </p>
         </div>
-        <div class="concept-box">
-          <div class="concept-key">WEEKLY ERROR</div>
-          <div class="concept-val"><strong style="font-size: 22px; color: var(--text);">~9.1%</strong><br>vs ~4.8% with gamma hedge</div>
+        <div>
+          <div class="img-frame" style="margin-bottom: 14px;">
+            <img src="../assets/deltahedging/P&L.png" alt="Mean P&L vs hedging volatility"/>
+          </div>
+          <p class="img-caption">MEAN P&L VS σ_HEDGE — vol mismatch effect, 1,000,000 paths</p>
         </div>
       </div>
 
-      <!-- Results -->
-      <div class="section-label"><span>GALLERY</span></div>
-      <div style="margin-bottom: 16px;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-          <div>
-            <div class="img-frame"><img src="../assets/deltahedging/Errors.png" alt="Hedging error vs frequency"/></div>
-            <p class="img-caption">ERROR VS FREQUENCY — simulated vs 1/√n theoretical</p>
-          </div>
-          <div>
-            <div class="img-frame"><img src="../assets/deltahedging/P&L.png" alt="P&L"/></div>
-            <p class="img-caption">MEAN P&L VS σ_HEDGE — volatility mismatch effect</p>
+      <!-- Implied Volatility Surface -->
+      <div class="section-label"><span>IMPLIED VOLATILITY SURFACE</span></div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div class="prose">
+          <p>
+            In practice, a single flat volatility $\sigma$ does not match observed market prices. The <strong>implied volatility surface</strong> $\sigma(K, T)$ maps each (strike, maturity) pair to its market-implied vol, built from live SPY option chains via yfinance.
+          </p>
+          <p>
+            The <strong>volatility skew</strong> is clearly visible — OTM puts (low strikes) carry significantly higher IV than OTM calls, reflecting the market's asymmetric fear of downside tail risk. The <strong>term structure</strong> shows short-dated vol spiking above the long-run level.
+          </p>
+          <div class="formula-box" style="margin-bottom: 0;">
+            <div class="formula-label">RBF + FAST GRID</div>
+            <div class="formula-desc">The surface is fitted once via Radial Basis Function interpolation (thin-plate spline) on ~300 market quotes. A 200×100 precomputed grid then gives O(1) bilinear IV lookup during simulation — 100–1000× faster than direct RBF evaluation.</div>
           </div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 64px;">
-          <div>
-            <div class="img-frame"><img src="../assets/deltahedging/Pricing.png" alt="BS pricing"/></div>
-            <p class="img-caption">BLACK-SCHOLES PRICING — call &amp; put vs spot</p>
+        <div>
+          <div class="img-frame" style="margin-bottom: 14px;">
+            <img src="../assets/deltahedging/Vol.png" alt="Implied volatility surface"/>
           </div>
-          <div>
-            <div class="img-frame"><img src="../assets/deltahedging/Distribution.png" alt="Distribution"/></div>
-            <p class="img-caption">DELTA VS GAMMA HEDGE — P&L distribution comparison</p>
+          <p class="img-caption">IMPLIED VOL SURFACE — SPY option chain, RBF interpolation</p>
+        </div>
+      </div>
+
+      <!-- Theory vs Practice -->
+      <div class="section-label"><span>THEORY VS PRACTICE</span></div>
+      <div class="two-col" style="margin-bottom: 64px;">
+        <div>
+          <div class="img-frame" style="margin-bottom: 14px;">
+            <img src="../assets/deltahedging/Theory VS Practice.png" alt="Theory vs Practice P&L comparison"/>
           </div>
+          <p class="img-caption">THEORY VS PRACTICE — flat vol (BS) vs market surface, 1M paths</p>
+        </div>
+        <div class="prose">
+          <p>
+            Running the same delta hedge under flat vol vs the real SPY surface quantifies exactly <strong>how much the volatility smile costs</strong> a delta hedger.
+          </p>
+          <p>
+            The flat-vol distribution (BS model) is tight and centred at zero — the hedge works when model matches reality. The market-surface distribution is dramatically wider: the hedger now faces skew and term structure that a constant-sigma delta cannot neutralise.
+          </p>
+          <div class="concept-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 0;">
+            <div class="concept-box">
+              <div class="concept-key">FLAT VOL (BS)</div>
+              <div class="concept-val"><strong>4.18%</strong> error — model matches simulation perfectly</div>
+            </div>
+            <div class="concept-box">
+              <div class="concept-key">MARKET SURFACE</div>
+              <div class="concept-val"><strong>10.40%</strong> error — 2.5× wider distribution from vol smile</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key results table -->
+      <div class="section-label"><span>MAIN RESULTS</span></div>
+      <div class="concept-grid" style="margin-bottom: 64px;">
+        <div class="concept-box">
+          <div class="concept-key">FLAT VOL — DAILY</div>
+          <div class="concept-val"><strong style="font-size: 22px; color: var(--text);">4.18%</strong><br>1M paths, n=252, σ=20%</div>
+        </div>
+        <div class="concept-box">
+          <div class="concept-key">MARKET SURFACE — DAILY</div>
+          <div class="concept-val"><strong style="font-size: 22px; color: var(--accent3);">10.40%</strong><br>real SPY vol surface, 1M paths</div>
+        </div>
+        <div class="concept-box">
+          <div class="concept-key">GAMMA HEDGE — WEEKLY</div>
+          <div class="concept-val"><strong style="font-size: 22px; color: var(--accent);">5.16%</strong><br>vs 9.08% delta-only</div>
         </div>
       </div>
 
@@ -357,9 +428,9 @@
             <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 1 — DONE</div>
             <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">European Call &amp; Put under GBM · Delta &amp; Delta-Gamma hedging · Transaction costs · Vol mismatch analysis · P&amp;L attribution (gamma vs theta) · Interactive Plotly dashboard · 37 unit tests</p>
           </div>
-          <div style="padding: 24px 28px; border: 1px solid var(--border); border-radius: 2px; opacity: 0.55;">
-            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 10px;">PHASE 2 — NEXT</div>
-            <p style="font-size: 14px; color: var(--muted2); line-height: 1.8;">Real market data via yfinance · Historical price extraction with dividend &amp; split adjustment · Realised vs implied volatility comparison · Hedging simulation on real equity paths (S&amp;P 500 constituents)</p>
+          <div style="padding: 24px 28px; border: 1px solid rgba(0,230,118,0.2); border-radius: 2px; background: rgba(0,230,118,0.02);">
+            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 2 — DONE</div>
+            <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">Real market data via yfinance · Live implied volatility surface (RBF interpolation) · build_fast_grid: O(1) bilinear IV lookup during simulation · Theory vs practice: flat vol (4.18%) vs market surface (10.40%) on 1M paths · 16 additional unit tests</p>
           </div>
         </div>
       </div>

@@ -141,18 +141,18 @@
         <a href="delta-hedging.html" class="project-card" style="text-decoration:none;color:inherit;display:block;">
           <div class="project-top">
             <span class="project-num">01</span>
-            <span class="project-status status-done">PHASE 1 COMPLETE</span>
+            <span class="project-status status-done">COMPLETE</span>
           </div>
           <h3>Delta &amp; Gamma<br>Hedging Simulation</h3>
           <p>
-            European option pricing under Geometric Brownian Motion via Monte Carlo, with repo rate modeling for realistic forward pricing. Implemented and compared Delta vs Delta-Gamma hedging on equity and FX underlyings. Analyzed hedging error distribution and transaction cost impact on P&amp;L. Interactive Jupyter widgets for Greeks sensitivity (Δ, Γ, ν, θ).
+            European option hedging under Black-Scholes via Monte Carlo (1M paths). Delta and delta-gamma hedging with P&amp;L attribution, transaction costs, and vol mismatch analysis. Extended with a live SPY implied volatility surface (RBF interpolation) to quantify how the vol smile degrades a flat-vol hedge — 4.18% error vs 10.40% on the real surface. 53 unit tests.
           </p>
           <div class="tags">
             <span class="tag">Python</span>
-            <span class="tag">Jupyter</span>
             <span class="tag">Monte Carlo</span>
             <span class="tag">Delta Hedging</span>
             <span class="tag">Greeks</span>
+            <span class="tag">Implied Vol Surface</span>
           </div>
         </a>
 
