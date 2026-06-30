@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Worst-Of Basket Note · William Cheymol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="icon" type="image/png" href="../assets/images/Avatar.png"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ]
+    });"></script>
+  <style>
+    .page-hero { padding: 120px 0 60px; position: relative; }
+    .page-hero .back {
+      font-family: var(--font-mono); font-size: 13px;
+      color: var(--muted); text-decoration: none; letter-spacing: 0.1em;
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-bottom: 44px; transition: color 0.2s;
+    }
+    .page-hero .back:hover { color: var(--text); }
+    .page-hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 20px;
+    }
+    .page-hero .subtitle { font-size: 17px; color: var(--muted2); max-width: 580px; line-height: 1.85; }
+
+    .meta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .meta-badge {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+      padding: 5px 14px; border-radius: 2px;
+    }
+    .meta-grade { color: #00e676; border: 1px solid rgba(0,230,118,0.25); }
+    .meta-year  { color: var(--muted2); border: 1px solid var(--border); }
+    .meta-field { color: var(--accent2); border: 1px solid rgba(0,176,255,0.25); }
+
+    .prose p { font-size: 16px; color: var(--muted2); line-height: 1.9; margin-bottom: 18px; max-width: 780px; }
+    .prose p strong { color: var(--text); font-weight: 500; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .two-col-wide { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center; }
+
+    .concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 48px; }
+    .concept-box { padding: 24px; border: 1px solid var(--border); border-radius: 2px; }
+    .concept-box .concept-key { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 10px; }
+    .concept-box .concept-val { font-size: 13px; color: var(--muted2); line-height: 1.75; }
+    .concept-box .concept-val strong { color: var(--text); font-weight: 500; }
+
+    .formula-box {
+      border: 1px solid rgba(0,230,118,0.15); border-radius: 2px;
+      padding: 28px 32px; background: rgba(0,230,118,0.02);
+    }
+    .formula-box .formula-label {
+      font-family: var(--font-mono); font-size: 10px; color: var(--accent);
+      letter-spacing: 0.12em; margin-bottom: 16px;
+    }
+    .formula-box .formula-desc { font-size: 13px; color: var(--muted); line-height: 1.75; margin-top: 16px; }
+
+    .img-frame { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; background: #080808; }
+    .img-frame img { width: 100%; display: block; }
+    .img-caption { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; margin-top: 8px; text-align: center; }
+
+    .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 64px; }
+    .result-card { padding: 24px; border: 1px solid var(--border); border-radius: 2px; }
+    .result-card .result-val { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; margin-bottom: 6px; }
+    .result-card .result-label { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 8px; }
+    .result-card .result-desc { font-size: 13px; color: var(--muted2); line-height: 1.65; }
+
+    @media (max-width: 900px) {
+      .page-hero { padding: 100px 0 40px; }
+      .two-col, .two-col-wide { grid-template-columns: 1fr; }
+      .concept-grid { grid-template-columns: 1fr 1fr; }
+      .results-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <nav>
+    <a href="../index.html" class="logo">cheymol<span>.io</span></a>
+    <div class="links">
+      <a href="../index.html">profile</a>
+      <a href="finance.html" class="active">finance</a>
+      <a href="tech.html">tech</a>
+      <a href="events.html">events</a>
+      <a href="loop.html">loop</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero fade-up">
+      <div class="page-hero-inner">
+        <a href="finance.html" class="back">← finance projects</a>
+        <div class="meta-row">
+          <span class="meta-badge meta-grade">COMPLETE</span>
+          <span class="meta-badge meta-field">PYTHON</span>
+          <span class="meta-badge meta-field">STRUCTURED PRODUCTS</span>
+        </div>
+        <h1>Worst-Of<br>Basket Note</h1>
+        <p class="subtitle">
+          Monte Carlo pricing of a worst-of basket note on three correlated equity indices — Cholesky correlation structure, per-asset Delta via common random numbers, and a price-vs-correlation sensitivity study. No QuantLib.
+        </p>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top: 0;">
+
+      <div class="section-label"><span>THE PROBLEM</span></div>
+      <div class="prose" style="margin-bottom: 64px;">
+        <p>
+          Structured products are packaged by banks to offer investors a specific risk-return profile — often yield enhancement in exchange for taking on a particular exposure. <strong>Worst-of basket notes</strong> are among the most widely issued equity structured products: instead of betting on a single underlying, the investor's payoff depends on whichever asset in a basket performs worst.
+        </p>
+        <p>
+          The key insight is that a worst-of note is <strong>implicitly short correlation</strong>. When assets move together, the worst performer stays close to the average and the note pays well. When they diverge, one asset lags badly and drags the payoff down. Structurers who sell the note are effectively selling correlation to the bank — which is why understanding the correlation sensitivity is central to pricing and risk-managing this product.
+        </p>
+        <p>
+          There's no closed-form formula for the minimum of several correlated lognormals, so Monte Carlo is necessary. This project builds the full pricer from scratch: correlation structure via Cholesky, terminal GBM simulation, per-asset Delta via common random numbers, and a price-vs-rho sensitivity study.
+        </p>
+      </div>
+
+      <!-- 1 — Distribution -->
+      <div class="section-label"><span>MONTE CARLO PRICING</span></div>
+      <div class="two-col" style="margin-bottom: 64px; align-items: center;">
+        <div>
+          <div class="img-frame">
+            <img src="../assets/worstofbasket/Distribution.png" alt="Worst-of performance distribution"/>
+          </div>
+          <p class="img-caption">WORST-OF PERFORMANCE DISTRIBUTION — 10,000 paths</p>
+        </div>
+        <div>
+          <div class="prose">
+            <p>
+              A <strong>worst-of basket note</strong> pays the return of the worst-performing asset. It is structurally <strong>short correlation</strong>: less correlation means more dispersion, a lower minimum, a cheaper note.
+            </p>
+            <p>
+              The distribution is right-skewed — the mass concentrates below 1 (losses) with a long tail of scenarios where all three assets perform well. Mean = 0.896, 5th percentile = 0.447.
+            </p>
+          </div>
+          <div class="formula-box">
+            <div class="formula-label">WORST-OF PRICE</div>
+            $$\text{Price} = N \cdot e^{-rT} \cdot \mathbb{E}\!\left[\min_i \frac{S_i(T)}{S_i(0)}\right]$$
+            <div class="formula-desc">$W = ZL^T$, $L$ Cholesky factor — three correlated draws from three independent ones.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 — Delta -->
+      <div class="section-label"><span>SENSITIVITIES</span></div>
+      <div class="two-col" style="margin-bottom: 64px; align-items: center;">
+        <div class="prose">
+          <p>
+            Each asset's Delta is computed by bumping $S_i(0)$ by +1% with the <strong>same random seed</strong> (common random numbers — isolates the bump from MC noise).
+          </p>
+          <p>
+            Euro Stoxx carries the largest Delta despite a mid-range vol (22%): its lower correlations to the other two make it the worst performer most often — and therefore the payoff driver.
+          </p>
+        </div>
+        <div>
+          <div class="img-frame">
+            <img src="../assets/worstofbasket/Delta.png" alt="Per-asset Delta"/>
+          </div>
+          <p class="img-caption">DELTA PER ASSET — common random numbers</p>
+        </div>
+      </div>
+
+      <!-- 3 — Price vs Rho -->
+      <div class="section-label"><span>CORRELATION SENSITIVITY</span></div>
+      <div class="two-col" style="margin-bottom: 64px; align-items: center;">
+        <div>
+          <div class="img-frame">
+            <img src="../assets/worstofbasket/PriceVsRho.png" alt="Price vs correlation"/>
+          </div>
+          <p class="img-caption">PRICE VS CORRELATION ρ — base case marked</p>
+        </div>
+        <div class="prose">
+          <p>
+            Price increases with correlation — high correlation keeps the worst performer close to the pack. The chart quantifies the short-correlation exposure in dollar terms.
+          </p>
+        </div>
+      </div>
+
+      <!-- MAIN RESULTS -->
+      <div class="section-label"><span>MAIN RESULTS</span></div>
+      <div class="results-grid">
+        <div class="result-card">
+          <div class="result-label">NOTE PRICE</div>
+          <div class="result-val">$843,443</div>
+          <div class="result-desc">$1M notional, 3y, 10k paths, seed 42 — deterministic</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">DELTA — EURO STOXX</div>
+          <div class="result-val">3,095</div>
+          <div class="result-desc">Largest: lowest correlation → worst performer most often</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">DELTA — NASDAQ</div>
+          <div class="result-val">2,913</div>
+          <div class="result-desc">Highest vol (25%), mid-range correlation</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">DELTA — S&amp;P 500</div>
+          <div class="result-val">2,197</div>
+          <div class="result-desc">Most correlated to others → least often the worst</div>
+        </div>
+      </div>
+
+      <!-- SOURCE CODE -->
+      <div style="padding: 32px; border: 1px solid var(--border); border-radius: 2px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <p style="font-family: var(--font-mono); font-size: 11px; color: var(--accent2); letter-spacing: 0.12em; margin-bottom: 8px;">SOURCE CODE</p>
+          <p style="font-size: 14px; color: var(--muted2);">Full implementation on GitHub — <code>correlation.py</code>, <code>simulation.py</code>, <code>pricing.py</code>, <code>sensitivities.py</code>.</p>
+        </div>
+        <a href="https://github.com/williamcheymol/worst_of_basket" class="btn btn-ghost" style="white-space:nowrap; margin-left: 32px;">github.com/williamcheymol/worst_of_basket ↗</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2026 William Cheymol</span>
+    <a href="https://github.com/williamcheymol" style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); text-decoration: none; letter-spacing: 0.1em;">github.com/williamcheymol</a>
+  </footer>
+
+  <script>
+    (function(){
+      var sel = '.concept-box, .formula-box, .result-card, .img-frame, .two-col, .two-col-wide';
+      document.querySelectorAll(sel).forEach(function(el){ el.classList.add('reveal'); });
+      document.querySelectorAll('.concept-grid, .results-grid').forEach(function(g){
+        Array.from(g.children).forEach(function(c,i){ c.style.transitionDelay = (i*70)+'ms'; });
+      });
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+      }, {threshold:0.06, rootMargin:'0px 0px -28px 0px'});
+      document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    })();
+  </script>
+  <script src="../gallery.js"></script>
+</body>
+</html>

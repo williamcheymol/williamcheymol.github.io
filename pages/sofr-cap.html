@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SOFR Swap Curve &amp; Cap Pricing · William Cheymol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="icon" type="image/png" href="../assets/images/Avatar.png"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ]
+    });"></script>
+  <style>
+    .page-hero { padding: 120px 0 60px; position: relative; }
+    .page-hero .back {
+      font-family: var(--font-mono); font-size: 13px;
+      color: var(--muted); text-decoration: none; letter-spacing: 0.1em;
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-bottom: 44px; transition: color 0.2s;
+    }
+    .page-hero .back:hover { color: var(--text); }
+    .page-hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 20px;
+    }
+    .page-hero .subtitle { font-size: 17px; color: var(--muted2); max-width: 580px; line-height: 1.85; }
+
+    .meta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .meta-badge {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+      padding: 5px 14px; border-radius: 2px;
+    }
+    .meta-grade { color: #00e676; border: 1px solid rgba(0,230,118,0.25); }
+    .meta-year  { color: var(--muted2); border: 1px solid var(--border); }
+    .meta-field { color: var(--accent2); border: 1px solid rgba(0,176,255,0.25); }
+
+    .prose p { font-size: 16px; color: var(--muted2); line-height: 1.9; margin-bottom: 18px; max-width: 780px; }
+    .prose p strong { color: var(--text); font-weight: 500; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .two-col-wide { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center; }
+
+    .concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 48px; }
+    .concept-box { padding: 24px; border: 1px solid var(--border); border-radius: 2px; }
+    .concept-box .concept-key { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 10px; }
+    .concept-box .concept-val { font-size: 13px; color: var(--muted2); line-height: 1.75; }
+    .concept-box .concept-val strong { color: var(--text); font-weight: 500; }
+
+    .formula-box {
+      border: 1px solid rgba(0,230,118,0.15); border-radius: 2px;
+      padding: 28px 32px; background: rgba(0,230,118,0.02);
+    }
+    .formula-box .formula-label {
+      font-family: var(--font-mono); font-size: 10px; color: var(--accent);
+      letter-spacing: 0.12em; margin-bottom: 16px;
+    }
+    .formula-box .formula-desc { font-size: 13px; color: var(--muted); line-height: 1.75; margin-top: 16px; }
+
+    .img-frame { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; background: #080808; }
+    .img-frame img { width: 100%; display: block; }
+    .img-caption { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; margin-top: 8px; text-align: center; }
+
+    .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 64px; }
+    .result-card { padding: 24px; border: 1px solid var(--border); border-radius: 2px; }
+    .result-card .result-val { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; margin-bottom: 6px; }
+    .result-card .result-label { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 8px; }
+    .result-card .result-desc { font-size: 13px; color: var(--muted2); line-height: 1.65; }
+
+    @media (max-width: 900px) {
+      .page-hero { padding: 100px 0 40px; }
+      .two-col, .two-col-wide { grid-template-columns: 1fr; }
+      .concept-grid { grid-template-columns: 1fr 1fr; }
+      .results-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <nav>
+    <a href="../index.html" class="logo">cheymol<span>.io</span></a>
+    <div class="links">
+      <a href="../index.html">profile</a>
+      <a href="finance.html" class="active">finance</a>
+      <a href="tech.html">tech</a>
+      <a href="events.html">events</a>
+      <a href="loop.html">loop</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero fade-up">
+      <div class="page-hero-inner">
+        <a href="finance.html" class="back">← finance projects</a>
+        <div class="meta-row">
+          <span class="meta-badge meta-grade">COMPLETE</span>
+          <span class="meta-badge meta-field">PYTHON</span>
+          <span class="meta-badge meta-field">FIXED INCOME</span>
+        </div>
+        <h1>SOFR Swap Curve<br>Calibration &amp; Cap Pricing</h1>
+        <p class="subtitle">
+          Bootstraps a SOFR zero-coupon curve from market swap rates, then prices a vanilla interest rate cap using Black-76 — DV01 and Vega by bump-and-reprice. No QuantLib.
+        </p>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top: 0;">
+      <div class="section-label"><span>THE PROBLEM</span></div>
+      <div class="prose" style="margin-bottom: 64px;">
+        <p>
+          Interest rate derivatives are the largest derivatives market in the world. At their core sits a single object: the <strong>discount curve</strong>. Before you can price anything — a swap, a cap, a swaption — you need to know what a dollar at a future date is worth today. That curve doesn't come for free; it has to be inferred from the instruments the market actually quotes.
+        </p>
+        <p>
+          Since 2023, <strong>SOFR</strong> (Secured Overnight Financing Rate) has replaced LIBOR as the benchmark for USD interest rate derivatives. This project builds the full pricing pipeline from scratch on a SOFR curve: bootstrapping the discount curve from market swap rates, then pricing a vanilla <strong>interest rate cap</strong> — one of the most common hedging instruments for floating-rate borrowers — using Black's model.
+        </p>
+      </div>
+
+      <!-- 1 — Curve -->
+      <div class="section-label"><span>CURVE CONSTRUCTION</span></div>
+      <div class="two-col" style="margin-bottom: 64px; align-items: center;">
+        <div>
+          <div class="img-frame">
+            <img src="../assets/sofrcap/Curve.png" alt="SOFR zero curve and instantaneous forward rate"/>
+          </div>
+          <p class="img-caption">ZERO CURVE &amp; INSTANTANEOUS FORWARD RATE</p>
+        </div>
+        <div class="prose">
+          <p>
+            The first step is building the discount curve. Markets quote <strong>par swap rates</strong>, not zero rates directly — each par rate is a weighted average over several discount factors, not a clean rate at a single maturity. Bootstrapping inverts this: discount factors are solved sequentially from short to long tenors, each isolated using those already computed.
+          </p>
+          <p>
+            An earlier version used a cubic spline for smoothness, but it produced a spurious dip between the 6m–1y pillars and an overshoot above 7% on the forward curve between 7y–10y. Linear interpolation was chosen instead: kinked but truthful beats smooth but wrong.
+          </p>
+          <div class="formula-box" style="margin-top: 4px;">
+            <div class="formula-label">SWAP TENOR BOOTSTRAP</div>
+            $$DF(t_n) = \frac{1 - s_n \cdot \sum_{i < n} \tau_i \cdot DF(t_i)}{1 + s_n \cdot \tau_n}$$
+            <div class="formula-desc">Zero rates follow as $r(T) = -\ln DF(T) / T$. Simple forward rates $F(T_1, T_2)$ — the inputs to cap pricing — come directly from the ratio of consecutive discount factors.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 — Caplets -->
+      <div class="section-label"><span>CAP PRICING — BLACK-76</span></div>
+      <div class="two-col" style="margin-bottom: 64px; align-items: center;">
+        <div class="prose">
+          <p>
+            Once the curve is built, we price a vanilla interest rate cap — a product that protects a floating-rate borrower against rising rates. A cap is simply a <strong>strip of independent caplets</strong>, one per accrual period: the cap price is the sum of individual caplet prices.
+          </p>
+          <p>
+            Because a forward rate isn't a tradeable asset, standard Black-Scholes doesn't apply. <strong>Black-76</strong> assumes the forward rate is lognormal under the $T_2$-forward measure — the market standard for rate optionality. The first period is excluded since its rate is already fixed at inception and carries no optionality.
+          </p>
+          <div class="formula-box" style="margin-top: 4px;">
+            <div class="formula-label">BLACK-76 CAPLET</div>
+            $$\text{Caplet} = \tau \cdot DF(T_2) \cdot \bigl[F \cdot N(d_1) - K \cdot N(d_2)\bigr]$$
+            <div class="formula-desc">$F = F(T_1, T_2)$ is the simple forward rate from the bootstrapped curve. Caplet prices increase with tenor: higher forward rates and longer time to expiry both push value up.</div>
+          </div>
+        </div>
+        <div>
+          <div class="img-frame">
+            <img src="../assets/sofrcap/Caplets.png" alt="Caplet prices by tenor"/>
+          </div>
+          <p class="img-caption">CAPLET PRICES BY TENOR — K = 3%, σ = 20%</p>
+        </div>
+      </div>
+
+      <!-- 3 — Sensitivities -->
+      <div class="section-label"><span>SENSITIVITIES</span></div>
+      <div class="two-col" style="margin-bottom: 64px; align-items: center;">
+        <div>
+          <div class="img-frame">
+            <img src="../assets/sofrcap/Vega.png" alt="Cap price vs flat Black volatility"/>
+          </div>
+          <p class="img-caption">CAP PRICE VS FLAT VOLATILITY σ — 10% to 40%</p>
+        </div>
+        <div class="prose">
+          <p>
+            Both sensitivities are computed by bump-and-reprice, but they differ in what gets bumped. <strong>DV01</strong> shifts all swap rates by +1bp and runs a <em>full re-bootstrap</em> before repricing — because rates are curve inputs, not just pricing parameters, any rate move changes the entire discount curve first.
+          </p>
+          <p>
+            <strong>Vega</strong> only bumps $\sigma$ by +1%, leaving the bootstrapped curve untouched. The chart confirms the relationship is nearly linear across the 10%–40% vol range — the cap is long vega, and sensitivity scales predictably with the vol level.
+          </p>
+        </div>
+      </div>
+
+      <!-- MAIN RESULTS -->
+      <div class="section-label"><span>MAIN RESULTS</span></div>
+      <div class="results-grid">
+        <div class="result-card">
+          <div class="result-label">ZERO RATE (5Y)</div>
+          <div class="result-val">2.99%</div>
+          <div class="result-desc">Continuously compounded, bootstrapped from swap inputs</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">CAP PRICE</div>
+          <div class="result-val">$21,963</div>
+          <div class="result-desc">5y cap, K = 3%, σ = 20%, $1M notional, quarterly</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">DV01</div>
+          <div class="result-val">$205</div>
+          <div class="result-desc">+1bp parallel shift with full re-bootstrap</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">VEGA</div>
+          <div class="result-val">$654</div>
+          <div class="result-desc">+1% flat vol shift, same curve</div>
+        </div>
+      </div>
+
+      <!-- SOURCE CODE -->
+      <div style="padding: 32px; border: 1px solid var(--border); border-radius: 2px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <p style="font-family: var(--font-mono); font-size: 11px; color: var(--accent2); letter-spacing: 0.12em; margin-bottom: 8px;">SOURCE CODE</p>
+          <p style="font-size: 14px; color: var(--muted2);">Full implementation on GitHub — <code>curve.py</code>, <code>cap_pricing.py</code>, <code>sensitivities.py</code>, theory comments throughout.</p>
+        </div>
+        <a href="https://github.com/williamcheymol/sofr_swap_cap" class="btn btn-ghost" style="white-space:nowrap; margin-left: 32px;">github.com/williamcheymol/sofr_swap_cap ↗</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2026 William Cheymol</span>
+    <a href="https://github.com/williamcheymol" style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); text-decoration: none; letter-spacing: 0.1em;">github.com/williamcheymol</a>
+  </footer>
+
+  <script>
+    (function(){
+      var sel = '.concept-box, .formula-box, .result-card, .img-frame, .two-col, .two-col-wide';
+      document.querySelectorAll(sel).forEach(function(el){ el.classList.add('reveal'); });
+      document.querySelectorAll('.concept-grid, .results-grid').forEach(function(g){
+        Array.from(g.children).forEach(function(c,i){ c.style.transitionDelay = (i*70)+'ms'; });
+      });
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+      }, {threshold:0.06, rootMargin:'0px 0px -28px 0px'});
+      document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    })();
+  </script>
+  <script src="../gallery.js"></script>
+</body>
+</html>
