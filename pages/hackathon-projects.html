@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}try{var n=performance.getEntriesByType("navigation")[0];var r=n?n.type==="reload":(performance.navigation&&performance.navigation.type===1);if(r){if("scrollRestoration" in history){history.scrollRestoration="manual";}window.scrollTo(0,0);}}catch(e){}})();</script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hackathons & Events — William Cheymol</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <title>Hackathon Projects — cheymol.io</title>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
   <link rel="stylesheet" href="../style.css"/>
   <link rel="icon" type="image/png" href="../assets/images/Avatar.png"/>
   <style>
@@ -78,9 +80,11 @@
       font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
       padding: 5px 14px; border-radius: 2px; white-space: nowrap;
     }
-    .badge-gold   { color: #ffd54f; border: 1px solid rgba(255,213,79,0.3); background: rgba(255,213,79,0.05); }
-    .badge-silver { color: #b0bec5; border: 1px solid rgba(176,190,197,0.3); background: rgba(176,190,197,0.05); }
+    .badge-gold   { color: var(--amber); border: 1px solid var(--amber); background: rgba(255,213,79,0.05); }
+    .badge-silver { color: var(--silver); border: 1px solid var(--silver); background: rgba(176,190,197,0.05); }
     .badge-event  { color: var(--accent2); border: 1px solid rgba(0,176,255,0.25); background: rgba(0,176,255,0.04); }
+    [data-theme="light"] .badge-gold { background: rgba(154,91,0,0.07); }
+    [data-theme="light"] .badge-silver { background: rgba(90,106,114,0.07); }
 
     .event-desc {
       font-size: 16px; color: var(--muted2); line-height: 1.85;
@@ -130,15 +134,19 @@
 </head>
 <body>
   <div class="grid-bg"></div>
+  <div id="page-transition"></div>
 
   <nav>
     <a href="../index.html" class="logo">cheymol<span>.io</span></a>
+    <div class="nav-right">
     <div class="links">
-      <a href="../index.html">profile</a>
+      <a href="../index.html" class="nav-home" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 9.5V19a1 1 0 0 0 1 1H9.5v-6h5v6H17.5a1 1 0 0 0 1-1V9.5"/></svg></a>
       <a href="finance.html">finance</a>
       <a href="tech.html">tech</a>
-      <a href="events.html" class="active">events</a>
+      <a href="hackathon-projects.html" class="active">hackathons</a>
       <a href="loop.html">loop</a>
+    </div>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" type="button"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
     </div>
   </nav>
 
@@ -146,11 +154,9 @@
     <div class="page-hero fade-up">
       <div class="page-hero-inner">
         <a href="../index.html" class="back">← back</a>
-        <h1>Hackathons,<br>
-          Responsabilities<br>
-          & Events</h1>
+        <h1>Hackathon<br>Projects</h1>
         <p class="subtitle">
-          Two hackathon wins, a student association, and a few events that shaped the way I think about building things.
+          Two hackathon wins — building real products from scratch, in few days, under pressure.
         </p>
       </div>
     </div>
@@ -185,9 +191,9 @@
         <div class="project-box">
           <span class="project-box-icon">◈</span>
           <div class="project-box-text">
-            <h4>ALIVE — AI-Powered Video Upscaler</h4>
+            <h4>ALIVE — AI Live Image Video Enhancement</h4>
             <p>
-              An AI video player capable of <strong>enhancing image quality in real time</strong> while reducing data usage by up to <strong>75%</strong>. Built to tackle the growing bandwidth cost of high-resolution streaming — technically ambitious, deployed in five days.
+              An AI video player capable of <strong>enhancing image quality in real time</strong> while reducing data usage by up to <strong>75%</strong>. Built to tackle the growing bandwidth cost of high-resolution streaming.
             </p>
           </div>
         </div>
@@ -201,11 +207,7 @@
 
         <div class="event-stats">
           <div class="stat">
-            <span class="stat-val">500+</span>
-            <span class="stat-key">STUDENTS</span>
-          </div>
-          <div class="stat">
-            <span class="stat-val">100</span>
+            <span class="stat-val">100+</span>
             <span class="stat-key">PROJECTS</span>
           </div>
           <div class="stat">
@@ -244,7 +246,7 @@
         <div class="project-box">
           <span class="project-box-icon">◈</span>
           <div class="project-box-text">
-            <h4>DOTAP — Intelligent Retail Merchandising</h4>
+            <h4>DOTAP — Development of Optimization Tools for Assortment Planning</h4>
             <p>
               A platform designed to <strong>optimise in-store product placement</strong> using data-driven merchandising logic. Built for retail chains looking to maximise shelf revenue through smarter layout decisions — the kind of problem where <strong>data and commercial instinct meet</strong>.
             </p>
@@ -275,36 +277,6 @@
         </div>
       </div>
 
-      <!-- KRYPTOSPHERE -->
-      <div class="section-label" style="margin-top: 16px;"><span>RESPONSIBILITIES</span></div>
-
-      <div class="event-card" style="margin-bottom: 20px;">
-        <div class="event-header">
-          <div class="event-meta">
-            <div class="event-logo">
-              <img src="../assets/images/ks.png" alt="Kryptosphere" onerror="this.style.display='none';this.parentElement.querySelector('.logo-placeholder').style.display='block'"/>
-              <div class="logo-placeholder" style="display:none">KS</div>
-            </div>
-            <div class="event-meta-text">
-              <div class="event-title">KRYPTOSPHERE — ENSIIE Chapter President</div>
-              <div class="event-sub">ENSIIE · 2024 – Present</div>
-            </div>
-          </div>
-          <div class="event-badges">
-            <span class="badge badge-event">PRESIDENT</span>
-          </div>
-        </div>
-        <p class="event-desc">
-          KRYPTOSPHERE is a student association at the crossroads of <strong>finance, blockchain and technology</strong>. As president of the ENSIIE chapter, organised a <strong>hackathon (15+ participants)</strong> and conferences with industry professionals from finance and blockchain — building a bridge between academic learning and real-world practice.
-        </p>
-        <div class="tags">
-          <span class="tag">Finance</span>
-          <span class="tag">Blockchain</span>
-          <span class="tag">Event Organisation</span>
-          <span class="tag">Leadership</span>
-        </div>
-      </div>
-
     </div>
   </main>
 
@@ -322,5 +294,6 @@
     <span>© 2026 William Cheymol</span>
     <span>Paris, France</span>
   </footer>
+  <script src="../assets/site.js"></script>
 </body>
 </html>

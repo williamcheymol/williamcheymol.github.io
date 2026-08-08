@@ -1,93 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}try{var n=performance.getEntriesByType("navigation")[0];var r=n?n.type==="reload":(performance.navigation&&performance.navigation.type===1);if(r){if("scrollRestoration" in history){history.scrollRestoration="manual";}window.scrollTo(0,0);}}catch(e){}})();</script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>William Cheymol</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <title>cheymol.io</title>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
   <link rel="stylesheet" href="style.css"/>
   <link rel="icon" type="image/png" href="assets/images/Avatar.png"/>
   <style>
     /* Hero */
     .hero {
       min-height: 100vh;
-      display: flex; flex-direction: column; justify-content: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
       position: relative; overflow: hidden;
+      text-align: center;
     }
     .hero-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 60px;
-    }
-    .hero-text { flex: 1; }
-
-    /* Photo */
-    @keyframes photoBreath {
-      0%, 100% { opacity: 0.85; }
-      50%       { opacity: 1; }
-    }
-    .hero-photo-wrap {
-      flex-shrink: 0;
-      position: relative;
-      width: 300px; height: 300px;
-    }
-    .hero-photo {
-      width: 100%; height: 100%;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 2px solid rgba(0, 230, 118, 0.25);
-      animation: photoBreath 5s ease-in-out infinite;
-    }
-    .hero-photo img {
-      width: 100%; height: 100%;
-      object-fit: cover; object-position: center top;
-      display: block;
-      filter: grayscale(10%);
-    }
-    .hero-photo-border {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      overflow: visible;
+      display: flex; flex-direction: column; align-items: center;
+      width: 100%;
     }
     .hero-glow {
-      position: absolute; top: 25%; left: 5%;
-      width: 600px; height: 600px; pointer-events: none;
-      background: radial-gradient(circle, rgba(0,230,118,0.03) 0%, transparent 70%);
-    }
-    .hero-prompt {
-      font-family: var(--font-mono);
-      font-size: 14px; color: var(--accent);
-      letter-spacing: 0.15em; margin-bottom: 28px;
+      position: absolute; top: 18%; left: 50%;
+      width: 700px; height: 700px; pointer-events: none;
+      transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(0,230,118,0.05) 0%, transparent 70%);
     }
     .hero h1 {
-      font-size: clamp(56px, 9vw, 104px);
-      font-weight: 700; letter-spacing: -0.03em; line-height: 1.0;
-      margin-bottom: 24px;
+      font-size: clamp(64px, 11vw, 148px);
+      font-weight: 700; letter-spacing: -0.02em; line-height: 0.98;
+      margin-bottom: 28px;
+    }
+    .hero h1 .letter {
+      display: inline-block;
+      transform-origin: 50% 100%;
+    }
+    .hero h1 .letter.wave {
+      animation: letterWave 1.3s cubic-bezier(0.45, 0, 0.2, 1);
+    }
+    @keyframes letterWave {
+      0%   { transform: translateY(0) skewX(0deg); color: var(--text); -webkit-text-stroke: 0px transparent; }
+      32%  { transform: translateY(-0.18em) skewX(-9deg); color: transparent; -webkit-text-stroke: 1.5px var(--accent); }
+      62%  { transform: translateY(-0.04em) skewX(5deg); color: transparent; -webkit-text-stroke: 1.5px var(--accent); }
+      100% { transform: translateY(0) skewX(0deg); color: var(--text); -webkit-text-stroke: 0px transparent; }
     }
     .hero-role {
-      display: flex; align-items: center; gap: 12px;
-      height: 40px; margin-bottom: 40px;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      height: 40px; margin-bottom: 36px;
     }
     .hero-role .slash {
       font-family: var(--font-mono); font-size: 16px; color: var(--accent);
     }
     .hero-role .typed {
-      font-size: clamp(18px, 2.5vw, 26px);
-      font-weight: 300; color: var(--text);
+      font-family: var(--font-mono);
+      font-size: clamp(15px, 2vw, 19px);
+      font-weight: 400; color: var(--muted2);
+      letter-spacing: 0.04em;
     }
     .cursor {
       display: inline-block; width: 2px; height: 1.1em;
       background: var(--accent); vertical-align: middle;
       animation: blink 1s step-end infinite;
     }
-    .hero-bio {
-      font-size: 17px; color: var(--muted2);
-      max-width: 560px; line-height: 1.9; margin-bottom: 48px;
-    }
-    .hero-bio strong { color: var(--text); font-weight: 500; }
-    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
 
     /* Scroll hint */
     @keyframes scrollDrop {
@@ -135,56 +111,179 @@
       color: var(--muted); letter-spacing: 0.12em;
     }
     .info-row .val { font-size: 15px; color: var(--text); }
+    .info-side { display: flex; flex-direction: column; height: 100%; }
+    .lang-block { margin-top: 40px; }
+    .lang-title {
+      font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+      letter-spacing: 0.12em; margin-bottom: 18px;
+    }
+    .lang-logos { display: flex; gap: 14px; }
+    .lang-logo {
+      width: 56px; height: 56px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--bg2);
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--theme-dur) var(--theme-ease), border-color var(--theme-dur) var(--theme-ease);
+    }
+    .lang-logo span {
+      font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+      color: var(--muted2); letter-spacing: 0.02em;
+    }
+    .lang-logo img { max-width: 32px; max-height: 32px; width: auto; height: auto; object-fit: contain; }
 
-    /* Pages nav */
-    .pages-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    /* Category storytelling blocks */
+    .category-block {
+      padding: 36px 0; border-bottom: 1px solid var(--border);
     }
-    .page-card {
-      display: block; padding: 36px 32px;
-      border: 1px solid var(--border); border-radius: 2px;
-      text-decoration: none; background: transparent;
-      transition: background 0.2s, border-color 0.2s;
-      position: relative; overflow: hidden;
+    .category-block:last-child { border-bottom: none; }
+    .category-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 32px;
     }
-    .page-card:hover { background: var(--bg2); border-color: #333; }
-    .page-card .num {
+    .category-row .category-head { margin-bottom: 0; flex: 1; }
+    .category-head {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      gap: 32px; margin-bottom: 28px;
+      position: relative; z-index: 2;
+    }
+    .category-head .btn { position: relative; z-index: 3; }
+    .category-head.no-btn { margin-bottom: 0; }
+    .btn-elevated {
+      background: var(--bg); box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      transition: background var(--theme-dur) var(--theme-ease), border-color var(--theme-dur) var(--theme-ease);
+    }
+    .btn-overlay {
+      position: absolute; right: 14px; bottom: 14px; z-index: 5;
+    }
+    .category-num {
       font-family: var(--font-mono); font-size: 12px;
-      color: var(--accent); letter-spacing: 0.12em; margin-bottom: 18px;
+      color: var(--accent); letter-spacing: 0.14em; display: block; margin-bottom: 14px;
     }
-    .page-card h3 {
-      font-size: 19px; font-weight: 600; color: var(--text); margin-bottom: 10px;
+    .category-head h3 {
+      font-size: clamp(28px, 4vw, 40px); font-weight: 700;
+      letter-spacing: -0.02em; margin-bottom: 14px;
     }
-    .page-card p {
-      font-size: 14px; color: var(--muted2); line-height: 1.75;
+    .category-head p {
+      font-size: 15px; color: var(--muted2); line-height: 1.8; max-width: 480px;
     }
-    .page-card .arrow {
-      position: absolute; bottom: 28px; right: 28px;
-      font-size: 20px; color: var(--accent); opacity: 0;
-      transition: opacity 0.2s, transform 0.2s;
-      transform: translate(-4px, 4px);
+    .category-head .btn { flex-shrink: 0; white-space: nowrap; }
+
+    /* Photo strip (marquee) */
+    .photo-strip {
+      overflow: hidden; margin-top: 8px;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
     }
-    .page-card:hover .arrow { opacity: 1; transform: translate(0, 0); }
+    .photo-strip-track {
+      display: flex; gap: 14px; width: max-content;
+      animation: marquee 32s linear infinite;
+    }
+    .photo-strip.reverse .photo-strip-track { animation-direction: reverse; }
+
+    /* Hackathon wins — two photos side by side */
+    .win-photos-wrap { position: relative; width: 100%; }
+    .win-photos {
+      display: flex; justify-content: center; align-items: center;
+      gap: 20px; margin-top: 8px;
+    }
+    .win-photos .photo-tile { width: 220px; }
+    .win-photos .photo-tile img { width: 100%; object-fit: cover; }
+    .win-divider {
+      width: 1px; height: 230px; background: var(--border); flex-shrink: 0;
+      transition: background var(--theme-dur) var(--theme-ease);
+    }
+
+    /* Loopstation single photo, fading in from the left */
+    .loop-photo-wrap {
+      margin-top: 0; flex-shrink: 0; position: relative;
+    }
+    .loop-photo {
+      max-height: 260px; width: auto; display: block;
+      border-radius: 6px;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 55%);
+      mask-image: linear-gradient(90deg, transparent, #000 55%);
+    }
+
+    /* Tech Projects fake terminal */
+    .tech-terminal-wrap {
+      margin-top: 0; flex-shrink: 0; position: relative;
+    }
+    .tech-terminal {
+      width: 100%; max-width: 480px;
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 6px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.28);
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%);
+      mask-image: linear-gradient(90deg, transparent, #000 30%);
+      transition: background var(--theme-dur) var(--theme-ease), border-color var(--theme-dur) var(--theme-ease);
+    }
+    .tech-terminal-bar {
+      display: flex; align-items: center; gap: 6px;
+      padding: 9px 12px; border-bottom: 1px solid var(--border);
+      transition: border-color var(--theme-dur) var(--theme-ease);
+    }
+    .tech-terminal-bar span {
+      width: 9px; height: 9px; border-radius: 50%; background: var(--border);
+    }
+    .tech-terminal-bar .dot-title {
+      width: auto; height: auto; border-radius: 0; background: none;
+      font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+      letter-spacing: 0.08em; margin-left: 6px;
+    }
+    .tech-terminal-body {
+      padding: 22px 14px 16px; font-family: var(--font-mono); font-size: 12.5px;
+      line-height: 1.9; color: var(--muted2);
+    }
+    .tech-terminal-body .prompt { color: var(--accent); }
+    .tech-terminal-body .out { color: var(--muted); display: block; }
+    .tech-terminal-body .ok { color: var(--accent); }
+    .tech-terminal-cursor {
+      display: inline-block; width: 7px; height: 13px; background: var(--accent);
+      margin-left: 2px; vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    .photo-tile {
+      height: 230px; flex-shrink: 0; width: auto;
+      border-radius: 6px; border: 1px solid var(--border);
+      background: var(--bg2);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .photo-tile img { height: 100%; width: auto; display: block; }
+    .photo-strip:not(.charts) .photo-tile { width: 220px; }
+    .photo-strip:not(.charts) .photo-tile img { width: 100%; object-fit: cover; }
+    .photo-tile .ph-label {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
 
     @media (max-width: 900px) {
-      .hero-inner { flex-direction: column-reverse; gap: 40px; }
-      .hero-photo-wrap { width: 200px; height: 200px; }
       .info-grid { grid-template-columns: 1fr; gap: 40px; }
-      .pages-grid { grid-template-columns: 1fr; }
+      .category-head { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .category-row { flex-direction: column; align-items: stretch; }
+      .loop-photo-wrap, .tech-terminal-wrap { align-self: flex-end; }
     }
   </style>
 </head>
 <body>
   <div class="grid-bg"></div>
+  <div id="page-transition"></div>
 
   <nav>
     <a href="index.html" class="logo">cheymol<span>.io</span></a>
+    <div class="nav-right">
     <div class="links">
-      <a href="index.html" class="active">profile</a>
+      <a href="index.html" class="active nav-home" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 9.5V19a1 1 0 0 0 1 1H9.5v-6h5v6H17.5a1 1 0 0 0 1-1V9.5"/></svg></a>
       <a href="pages/finance.html">finance</a>
       <a href="pages/tech.html">tech</a>
-      <a href="pages/events.html">events</a>
+      <a href="pages/hackathon-projects.html">hackathons</a>
       <a href="pages/loop.html">loop</a>
+    </div>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" type="button"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
     </div>
   </nav>
 
@@ -193,50 +292,11 @@
     <section class="hero fade-up">
       <div class="hero-glow"></div>
       <div class="hero-inner">
-        <div class="hero-text">
-          <p class="hero-prompt">$ whoami</p>
-          <h1>William<br>Cheymol</h1>
-          <div class="hero-role">
-            <span class="slash">//</span>
-            <span class="typed" id="typed-text"></span>
-            <span class="cursor"></span>
-          </div>
-          <p class="hero-bio">
-            Finance student with a passion for <strong>derivatives markets</strong> and <strong>quantitative methods</strong>.<br>
-            Looking for a <strong>6-month</strong> Front Office internship in Trading, Structuring or Quant Research — <strong>starting September 2026</strong>.
-          </p>
-          <div class="hero-actions">
-            <a href="https://www.linkedin.com/in/william-cheymol/" class="btn btn-primary">Get in touch</a>
-          </div>
-        </div>
-        <div class="hero-photo-wrap">
-          <div class="hero-photo">
-            <img src="assets/images/profile.jpg" alt="William Cheymol"/>
-          </div>
-          <!-- Deux points qui font le tour -->
-          <svg class="hero-photo-border" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <path id="photo-path" d="M 12,0 L 288,0 Q 300,0 300,12 L 300,288 Q 300,300 288,300 L 12,300 Q 0,300 0,288 L 0,12 Q 0,0 12,0 Z"/>
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="2.5" result="blur"/>
-                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-            </defs>
-
-            <!-- COMÈTE 1 — traînée -->
-            <circle r="2.6" fill="#00e676" opacity="0.5"><animateMotion dur="10s" begin="0.18s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
-            <circle r="2.0" fill="#00e676" opacity="0.28"><animateMotion dur="11s" begin="0.32s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
-            <circle r="1.4" fill="#00e676" opacity="0.13"><animateMotion dur="12s" begin="0.44s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
-            <!-- COMÈTE 1 — tête -->
-            <circle r="3.5" fill="#00e676" opacity="0.95" filter="url(#glow)"><animateMotion dur="8.5s" begin="0s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
-
-            <!-- COMÈTE 2 — traînée (demi-tour de décalage) -->
-            <circle r="2.6" fill="#00e676" opacity="0.5"><animateMotion dur="13s" begin="-2.32s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
-            <circle r="2.0" fill="#00e676" opacity="0.28"><animateMotion dur="14s" begin="-2.18s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
-            <circle r="1.4" fill="#00e676" opacity="0.13"><animateMotion dur="15s" begin="-2.06s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
-            <!-- COMÈTE 2 — tête -->
-            <circle r="3.5" fill="#00e676" opacity="0.95" filter="url(#glow)"><animateMotion dur="8s" begin="-2.5s" repeatCount="indefinite"><mpath href="#photo-path"/></animateMotion></circle>
-          </svg>
+        <h1 id="hero-name">William<br>Cheymol</h1>
+        <div class="hero-role">
+          <span class="slash">//</span>
+          <span class="typed" id="typed-text"></span>
+          <span class="cursor"></span>
         </div>
       </div>
       <div class="scroll-hint">
@@ -249,11 +309,11 @@
 
     <!-- ABOUT -->
     <section class="container">
-      <div class="section-label"><span>01 / ABOUT</span></div>
+      <div class="section-label"><span>Profile</span></div>
       <div class="info-grid">
         <div class="info-text">
           <p>
-            Engineering student at <strong>ENSIIE</strong> in Quantitative Finance, Applied Mathematics and Computer Science. Currently on exchange at the <strong>M2QF — University of Bologna</strong>, and continuing at the <strong>M2 Quantitative Finance, Paris-Saclay</strong> (ex DEA Dominique Jeanblanc).
+            Engineering student at <strong>ENSIIE</strong> in Quantitative Finance, Applied Mathematics and Computer Science. Continuing at the <strong>M2 Quantitative Finance, Paris-Saclay</strong> (ex DEA Dominique Jeanblanc).
           </p>
           <p>
             I'm drawn to the intersection of <strong>rigorous mathematics</strong> and
@@ -263,31 +323,33 @@
             Outside of finance, I build side projects in Python, lead the <strong>KRYPTOSPHERE chapter at ENSIIE</strong>, and play loopstation — live music built entirely through real-time layering and improvisation.
           </p>
         </div>
-        <div class="info-list">
-          <div class="info-row">
-            <span class="key">School</span>
-            <span class="val">ENSIIE</span>
+        <div class="info-side">
+          <div class="info-list">
+            <div class="info-row">
+              <span class="key">School</span>
+              <span class="val">ENSIIE</span>
+            </div>
+            <div class="info-row">
+              <span class="key">Location</span>
+              <span class="val">Paris, France</span>
+            </div>
+            <div class="info-row">
+              <span class="key">Focus</span>
+              <span class="val">Trading · Structuring
+              </span>
+            </div>
+            <div class="info-row">
+              <span class="key">Languages</span>
+              <span class="val">French · English</span>
+            </div>
           </div>
-          <div class="info-row">
-            <span class="key">Location</span>
-            <span class="val">Paris, France</span>
-          </div>
-          <div class="info-row">
-            <span class="key">Available</span>
-            <span class="val">6 months · from September 2026</span>
-          </div>
-          <div class="info-row">
-            <span class="key">Target</span>
-            <span class="val">Trading · Structuring · Quant
-            </span>
-          </div>
-          <div class="info-row">
-            <span class="key">Exchange</span>
-            <span class="val">M2QF · University of Bologna</span>
-          </div>
-          <div class="info-row">
-            <span class="key">Languages</span>
-            <span class="val">French · English</span>
+          <div class="lang-block">
+            <p class="lang-title">MAIN PROGRAMMING LANGUAGES</p>
+            <div class="lang-logos">
+              <div class="lang-logo"><img src="assets/images/python.png" alt="Python"/></div>
+              <div class="lang-logo"><img src="assets/images/c++.png" alt="C++"/></div>
+              <div class="lang-logo"><img src="assets/images/VBA.png" alt="VBA"/></div>
+            </div>
           </div>
         </div>
       </div>
@@ -295,32 +357,119 @@
 
     <!-- PAGES NAV -->
     <section class="container" style="padding-top: 0;">
-      <div class="section-label"><span>02 / EXPLORE</span></div>
-      <div class="pages-grid">
-        <a href="pages/finance.html" class="page-card">
-          <div class="num">01</div>
-          <h3>Finance Projects</h3>
-          <p>Derivatives pricing, quant models, structured products and financial analysis.</p>
-          <span class="arrow">↗</span>
-        </a>
-        <a href="pages/tech.html" class="page-card">
-          <div class="num">02</div>
-          <h3>Tech Projects</h3>
-          <p>Python tools, data pipelines, backtesting engines and market data analysis.</p>
-          <span class="arrow">↗</span>
-        </a>
-        <a href="pages/events.html" class="page-card">
-          <div class="num">03</div>
-          <h3>Events</h3>
-          <p>Conferences, hackathons and student initiatives — organising and participating in the finance & tech scene.</p>
-          <span class="arrow">↗</span>
-        </a>
-        <a href="pages/loop.html" class="page-card">
-          <div class="num">04</div>
-          <h3>Loopstation</h3>
-          <p>Live music built from nothing — one layer at a time, in real time, with no safety net.</p>
-          <span class="arrow">↗</span>
-        </a>
+      <div class="section-label"><span>Explore</span></div>
+
+      <div class="category-block reveal">
+        <div class="category-head no-btn">
+          <div>
+            <span class="category-num">01</span>
+            <h3>Finance Projects</h3>
+            <p>Derivatives pricing, quant models, structured products and financial analysis.</p>
+          </div>
+        </div>
+        <div class="win-photos-wrap">
+        <div class="photo-strip charts">
+          <div class="photo-strip-track">
+            <div class="photo-tile"><img src="assets/deltahedging/Vol.png" alt="SPY implied volatility surface"/></div>
+            <div class="photo-tile"><img src="assets/marketfetcher/AAPL_iv_smile.png" alt="AAPL implied volatility smile"/></div>
+            <div class="photo-tile"><img src="assets/deltahedging/Greeks.png" alt="Black-Scholes Greeks"/></div>
+            <div class="photo-tile"><img src="assets/sofrcap/Curve.png" alt="SOFR zero and forward curve"/></div>
+            <div class="photo-tile"><img src="assets/worstofbasket/Distribution.png" alt="Worst-of basket payoff distribution"/></div>
+            <div class="photo-tile"><img src="assets/deltahedging/Vol.png" alt="SPY implied volatility surface"/></div>
+            <div class="photo-tile"><img src="assets/marketfetcher/AAPL_iv_smile.png" alt="AAPL implied volatility smile"/></div>
+            <div class="photo-tile"><img src="assets/deltahedging/Greeks.png" alt="Black-Scholes Greeks"/></div>
+            <div class="photo-tile"><img src="assets/sofrcap/Curve.png" alt="SOFR zero and forward curve"/></div>
+            <div class="photo-tile"><img src="assets/worstofbasket/Distribution.png" alt="Worst-of basket payoff distribution"/></div>
+          </div>
+        </div>
+        <a href="pages/finance.html" class="btn btn-ghost btn-elevated btn-overlay">Explore ↗</a>
+        </div>
+      </div>
+
+      <div class="category-block reveal">
+        <div class="category-row">
+          <div class="category-head no-btn">
+            <div>
+              <span class="category-num">02</span>
+              <h3>Tech Projects</h3>
+              <p>Python tools, data pipelines, backtesting engines and market data analysis.</p>
+            </div>
+          </div>
+          <div class="tech-terminal-wrap">
+            <div class="tech-terminal">
+              <div class="tech-terminal-bar">
+                <span></span><span></span><span></span>
+                <span class="dot-title">zsh — tech</span>
+              </div>
+              <div class="tech-terminal-body">
+                <div><span class="prompt">$</span> python backtest.py --strategy momentum --years 5</div>
+                <span class="out">fetching market data... 1,847 tickers</span>
+                <span class="out">running backtest... <span class="ok">done</span> (2.3s)</span>
+                <span class="out">sharpe: 1.42  max_dd: -11.6%  cagr: 18.3%</span>
+                <div><span class="prompt">$</span> <span class="tech-terminal-cursor"></span></div>
+              </div>
+            </div>
+            <a href="pages/tech.html" class="btn btn-ghost btn-elevated btn-overlay">Explore ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="category-block reveal">
+        <div class="category-head no-btn">
+          <div>
+            <span class="category-num">03</span>
+            <h3>Hackathon Projects</h3>
+            <p>Two hackathon wins — building real products from scratch, in days, under pressure.</p>
+          </div>
+        </div>
+        <div class="win-photos-wrap">
+        <div class="win-photos">
+          <div class="photo-tile"><img src="assets/images/CPE.png" alt="CPE hackathon"/></div>
+          <div class="win-divider"></div>
+          <div class="photo-tile"><img src="assets/images/SS.png" alt="Hackathon finale"/></div>
+        </div>
+        <a href="pages/hackathon-projects.html" class="btn btn-ghost btn-elevated btn-overlay">Explore ↗</a>
+        </div>
+      </div>
+
+      <div class="category-block reveal">
+        <div class="category-row">
+          <div class="category-head no-btn">
+            <div>
+              <span class="category-num">04</span>
+              <h3>Loopstation</h3>
+              <p>Live music built from nothing — one layer at a time, in real time, with no safety net.</p>
+            </div>
+          </div>
+          <div class="loop-photo-wrap">
+            <img src="assets/images/loop.png" alt="Loopstation live" class="loop-photo"/>
+            <a href="pages/loop.html" class="btn btn-ghost btn-elevated btn-overlay">Explore ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLOSING CTA -->
+    <section class="container" style="padding-top: 0;">
+      <div style="display: flex; align-items: center; gap: 16px; margin: 8px 0 40px;">
+        <div style="flex: 1; height: 1px; background: var(--border);"></div>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0;"></span>
+        <div style="flex: 1; height: 1px; background: var(--border);"></div>
+      </div>
+
+      <div style="padding: 48px; border: 1px solid var(--border); border-radius: 2px; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap;">
+        <div>
+          <p style="font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">INTERESTED IN MY WORK?</p>
+          <p style="font-size: 15px; color: var(--muted2);">Always happy to talk derivatives, structured products, quant methods, or anything markets-related.</p>
+        </div>
+        <a href="https://www.linkedin.com/in/william-cheymol/" class="btn btn-primary" style="white-space: nowrap;">Get in touch</a>
+      </div>
+
+      <div style="display: flex; justify-content: center; margin-top: 40px;">
+        <button id="back-to-top" class="btn btn-ghost" aria-label="Back to top" style="display: flex; align-items: center; gap: 8px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+          Back to top
+        </button>
       </div>
     </section>
   </main>
@@ -350,17 +499,51 @@
 
     // Scroll reveal
     (function(){
-      var sel = '.page-card, .info-row';
+      var sel = '.category-block, .info-row, .lang-block';
       document.querySelectorAll(sel).forEach(function(el){ el.classList.add('reveal'); });
-      document.querySelectorAll('.pages-grid').forEach(function(g){
-        Array.from(g.children).forEach(function(c,i){ c.style.transitionDelay = (i*80)+'ms'; });
-      });
       var io = new IntersectionObserver(function(entries){
         entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
       }, {threshold:0.07, rootMargin:'0px 0px -28px 0px'});
       document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
     })();
+
+    // Name identity effect — a fluid green wave runs through the letters
+    (function(){
+      var h1 = document.getElementById('hero-name');
+      if (!h1) return;
+      var text = h1.textContent;
+      h1.innerHTML = '';
+      var letters = [];
+      text.split('').forEach(function(ch, i){
+        if (ch === '\n') return;
+        var span = document.createElement('span');
+        if (ch === ' ') {
+          span.innerHTML = '&nbsp;';
+        } else {
+          span.textContent = ch;
+        }
+        span.className = 'letter';
+        h1.appendChild(span);
+        letters.push(span);
+        if (i === 6) h1.appendChild(document.createElement('br'));
+      });
+
+      function runWave() {
+        letters.forEach(function(span, i){
+          span.style.animationDelay = (i * 70) + 'ms';
+          span.classList.remove('wave');
+          void span.offsetWidth;
+          span.classList.add('wave');
+        });
+      }
+      setTimeout(runWave, 900);
+      setInterval(runWave, 6500);
+    })();
+
+    document.getElementById('back-to-top').addEventListener('click', function(){
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   </script>
+  <script src="assets/site.js"></script>
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        

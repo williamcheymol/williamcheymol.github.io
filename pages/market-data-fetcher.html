@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}try{var n=performance.getEntriesByType("navigation")[0];var r=n?n.type==="reload":(performance.navigation&&performance.navigation.type===1);if(r){if("scrollRestoration" in history){history.scrollRestoration="manual";}window.scrollTo(0,0);}}catch(e){}})();</script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Market Data Fetcher · William Cheymol</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <title>Market Data Fetcher · cheymol.io</title>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
   <link rel="stylesheet" href="../style.css"/>
   <link rel="icon" type="image/png" href="../assets/images/Avatar.png"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
@@ -22,6 +24,11 @@
       --orange: #ff9500;
       --orange-dim: rgba(255,149,0,0.15);
       --orange-bg: rgba(255,149,0,0.03);
+    }
+    [data-theme="light"] {
+      --orange: #7e1a89;
+      --orange-dim: rgba(126,26,137,0.2);
+      --orange-bg: rgba(126,26,137,0.06);
     }
 
     .page-hero { padding: 120px 0 60px; position: relative; }
@@ -47,7 +54,7 @@
       font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
       padding: 5px 14px; border-radius: 2px;
     }
-    .meta-grade { color: #00e676; border: 1px solid rgba(0,230,118,0.25); }
+    .meta-grade { color: var(--accent); border: 1px solid rgba(0,230,118,0.25); }
     .meta-field { color: var(--accent2); border: 1px solid rgba(0,176,255,0.25); }
 
     /* Prose */
@@ -155,14 +162,18 @@
 </head>
 <body>
   <div class="grid-bg"></div>
+  <div id="page-transition"></div>
   <nav>
     <a href="../index.html" class="logo">cheymol<span>.io</span></a>
+    <div class="nav-right">
     <div class="links">
-      <a href="../index.html">profile</a>
+      <a href="../index.html" class="nav-home" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 9.5V19a1 1 0 0 0 1 1H9.5v-6h5v6H17.5a1 1 0 0 0 1-1V9.5"/></svg></a>
       <a href="finance.html">finance</a>
       <a href="tech.html" class="active">tech</a>
-      <a href="events.html">events</a>
+      <a href="hackathon-projects.html">hackathons</a>
       <a href="loop.html">loop</a>
+    </div>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" type="button"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
     </div>
   </nav>
 
@@ -364,134 +375,134 @@
 
       <!-- Output — Equity CSV -->
       <div class="section-label"><span>OUTPUT</span></div>
-      <div style="margin-bottom: 28px; background: #0a0a0a; border: 1px solid var(--orange-dim); border-radius: 2px; overflow-x: auto;">
+      <div class="data-table-frame" style="margin-bottom: 28px; background: var(--bg2); border: 1px solid var(--orange-dim); border-radius: 2px; overflow-x: auto;">
         <div style="font-family: var(--font-mono); font-size: 11px; color: var(--orange); letter-spacing: 0.1em; padding: 14px 20px; border-bottom: 1px solid var(--orange-dim);">results/AAPL_data.csv</div>
         <table style="width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; white-space: nowrap;">
           <thead>
-            <tr style="border-bottom: 1px solid #1e1e1e;">
-              <th style="padding: 10px 20px; text-align: left; color: #444; font-weight: 400;">date</th>
-              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">open</th>
-              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">high</th>
-              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">low</th>
-              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">close</th>
-              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">volume</th>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <th style="padding: 10px 20px; text-align: left; color: var(--muted); font-weight: 400;">date</th>
+              <th style="padding: 10px 16px; text-align: right; color: var(--muted); font-weight: 400;">open</th>
+              <th style="padding: 10px 16px; text-align: right; color: var(--muted); font-weight: 400;">high</th>
+              <th style="padding: 10px 16px; text-align: right; color: var(--muted); font-weight: 400;">low</th>
+              <th style="padding: 10px 16px; text-align: right; color: var(--muted); font-weight: 400;">close</th>
+              <th style="padding: 10px 16px; text-align: right; color: var(--muted); font-weight: 400;">volume</th>
               <th style="padding: 10px 16px; text-align: right; color: var(--orange); font-weight: 400;">log_return</th>
               <th style="padding: 10px 16px; text-align: right; color: var(--orange); font-weight: 400;">realised_vol</th>
               <th style="padding: 10px 16px; text-align: right; color: var(--orange); font-weight: 400;">cumulative_return</th>
             </tr>
           </thead>
           <tbody>
-            <tr style="border-bottom: 1px solid #111;">
-              <td style="padding: 10px 20px; color: #555;">2020-02-03</td>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 10px 20px; color: var(--muted);">2020-02-03</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">73.35</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">75.57</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">72.85</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">74.40</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">173 788 400</td>
-              <td style="padding: 10px 16px; text-align: right; color: #ff6b6b;">&#8722;0.00275</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--accent3);">&#8722;0.00275</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--orange);">0.2756</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--orange);">0.0277</td>
             </tr>
-            <tr style="border-bottom: 1px solid #111;">
-              <td style="padding: 10px 20px; color: #555;">2020-02-04</td>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 10px 20px; color: var(--muted);">2020-02-04</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">76.01</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">77.05</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">75.60</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">76.86</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">136 616 400</td>
-              <td style="padding: 10px 16px; text-align: right; color: #00e676;">+0.03248</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--accent);">+0.03248</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--orange);">0.2926</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--orange);">0.0616</td>
             </tr>
-            <tr style="border-bottom: 1px solid #111;">
-              <td style="padding: 10px 20px; color: #555;">2020-02-05</td>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 10px 20px; color: var(--muted);">2020-02-05</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">77.99</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">78.28</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">76.88</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">77.49</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">118 826 800</td>
-              <td style="padding: 10px 16px; text-align: right; color: #00e676;">+0.00812</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--accent);">+0.00812</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--orange);">0.2926</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--orange);">0.0703</td>
             </tr>
             <tr>
-              <td style="padding: 10px 20px; color: #555;">2020-02-06</td>
+              <td style="padding: 10px 20px; color: var(--muted);">2020-02-06</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">77.76</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">78.40</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">77.20</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">78.39</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">105 425 600</td>
-              <td style="padding: 10px 16px; text-align: right; color: #00e676;">+0.01163</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--accent);">+0.01163</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--orange);">0.2924</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--orange);">0.0828</td>
             </tr>
           </tbody>
         </table>
-        <div style="padding: 10px 20px; font-family: var(--font-mono); font-size: 10px; color: #333; border-top: 1px solid #111;">
+        <div style="padding: 10px 20px; font-family: var(--font-mono); font-size: 10px; color: var(--muted); border-top: 1px solid var(--border);">
           1 258 rows &#183; AAPL &#183; 2020-01-02 &#8594; 2024-12-31
         </div>
       </div>
 
       <!-- Output — Options CSV -->
-      <div style="margin-bottom: 64px; background: #0a0a0a; border: 1px solid rgba(0,176,255,0.15); border-radius: 2px; overflow-x: auto;">
+      <div class="data-table-frame" style="margin-bottom: 64px; background: var(--bg2); border: 1px solid rgba(0,176,255,0.15); border-radius: 2px; overflow-x: auto;">
         <div style="font-family: var(--font-mono); font-size: 11px; color: var(--accent2); letter-spacing: 0.1em; padding: 14px 20px; border-bottom: 1px solid rgba(0,176,255,0.15);">results/AAPL_options.csv</div>
         <table style="width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; white-space: nowrap;">
           <thead>
-            <tr style="border-bottom: 1px solid #1e1e1e;">
-              <th style="padding: 10px 20px; text-align: left; color: #444; font-weight: 400;">type</th>
-              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">strike</th>
-              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">expiry</th>
-              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">mid</th>
-              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">T</th>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <th style="padding: 10px 20px; text-align: left; color: var(--muted); font-weight: 400;">type</th>
+              <th style="padding: 10px 16px; text-align: right; color: var(--muted); font-weight: 400;">strike</th>
+              <th style="padding: 10px 16px; text-align: right; color: var(--muted); font-weight: 400;">expiry</th>
+              <th style="padding: 10px 16px; text-align: right; color: var(--muted); font-weight: 400;">mid</th>
+              <th style="padding: 10px 16px; text-align: right; color: var(--muted); font-weight: 400;">T</th>
               <th style="padding: 10px 16px; text-align: right; color: var(--accent2); font-weight: 400;">implied_vol</th>
-              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">yf_implied_vol</th>
-              <th style="padding: 10px 16px; text-align: right; color: #444; font-weight: 400;">volume</th>
+              <th style="padding: 10px 16px; text-align: right; color: var(--muted); font-weight: 400;">yf_implied_vol</th>
+              <th style="padding: 10px 16px; text-align: right; color: var(--muted); font-weight: 400;">volume</th>
             </tr>
           </thead>
           <tbody>
-            <tr style="border-bottom: 1px solid #111;">
-              <td style="padding: 10px 20px; color: #ff6b6b;">put</td>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 10px 20px; color: var(--accent3);">put</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">260.00</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">2026-06-19</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">7.90</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">0.119</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--accent2);">0.3062</td>
-              <td style="padding: 10px 16px; text-align: right; color: #555;">0.3114</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted);">0.3114</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">1 987</td>
             </tr>
-            <tr style="border-bottom: 1px solid #111;">
-              <td style="padding: 10px 20px; color: #ff6b6b;">put</td>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 10px 20px; color: var(--accent3);">put</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">270.00</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">2026-05-15</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">4.15</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">0.019</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--accent2);">0.2714</td>
-              <td style="padding: 10px 16px; text-align: right; color: #555;">0.2689</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted);">0.2689</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">7 103</td>
             </tr>
-            <tr style="border-bottom: 1px solid #111;">
-              <td style="padding: 10px 20px; color: #00e676;">call</td>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 10px 20px; color: var(--accent);">call</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">280.00</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">2026-05-15</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">14.30</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">0.019</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--accent2);">0.2381</td>
-              <td style="padding: 10px 16px; text-align: right; color: #555;">0.2410</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted);">0.2410</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">4 821</td>
             </tr>
             <tr>
-              <td style="padding: 10px 20px; color: #00e676;">call</td>
+              <td style="padding: 10px 20px; color: var(--accent);">call</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">290.00</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">2026-06-19</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">11.80</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">0.119</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--accent2);">0.2455</td>
-              <td style="padding: 10px 16px; text-align: right; color: #555;">0.2502</td>
+              <td style="padding: 10px 16px; text-align: right; color: var(--muted);">0.2502</td>
               <td style="padding: 10px 16px; text-align: right; color: var(--muted2);">2 340</td>
             </tr>
           </tbody>
         </table>
-        <div style="padding: 10px 20px; font-family: var(--font-mono); font-size: 10px; color: #333; border-top: 1px solid #111;">
+        <div style="padding: 10px 20px; font-family: var(--font-mono); font-size: 10px; color: var(--muted); border-top: 1px solid var(--border);">
           309 contracts solved &#183; AAPL &#183; S&#160;=&#160;287.51 &#183; r&#160;=&#160;3.60% &#183; 4 maturities
         </div>
       </div>
@@ -523,6 +534,12 @@
             <strong>ATM Implied Vol vs Realised Vol (16.1%)</strong> &#8212; IV consistently exceeds realised vol across all maturities. This spread is the variance risk premium: the extra return option sellers demand for bearing volatility uncertainty.
           </div>
         </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 16px; margin: 8px 0 40px;">
+        <div style="flex: 1; height: 1px; background: var(--border);"></div>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0;"></span>
+        <div style="flex: 1; height: 1px; background: var(--border);"></div>
       </div>
 
       <!-- Source code CTA -->
@@ -559,5 +576,6 @@
     })();
   </script>
   <script src="../gallery.js"></script>
+  <script src="../assets/site.js"></script>
 </body>
 </html>

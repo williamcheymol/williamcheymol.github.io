@@ -9,7 +9,13 @@
   const EASING = 'cubic-bezier(0.22, 1, 0.36, 1)';
   const DURATION_IN  = '0.35s';
   const DURATION_OUT = '0.28s';
-  const GLOW = '0 0 0 1px rgba(255,255,255,0.18), 0 0 22px 6px rgba(255,255,255,0.07)';
+
+  // Signature accent green — always vivid against dark frames, light pages
+  // and the dark zoom backdrop alike, so it never washes out either theme.
+  const GLOW_RGB = '0,230,118';
+  function getHoverGlow() {
+    return `0 0 0 1px rgba(${GLOW_RGB},0.45), 0 0 20px 5px rgba(${GLOW_RGB},0.24)`;
+  }
 
   let activeClone    = null;
   let activeBackdrop = null;
@@ -90,15 +96,21 @@
       z-index: 9999;
       left: 0; right: 0;
       top: ${rect.top + rect.height + 14}px;
+      width: fit-content;
+      max-width: calc(100% - 80px);
+      margin: 0 auto;
       text-align: center;
       font-family: 'Inter', system-ui, sans-serif;
       font-size: 13px;
-      color: rgba(172,172,172,0);
+      color: rgba(232,232,232,0);
       letter-spacing: 0.02em;
       line-height: 1.5;
-      padding: 0 40px;
+      padding: 8px 22px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0);
+      border: 1px solid rgba(${GLOW_RGB},0);
       pointer-events: none;
-      transition: color ${DURATION_IN} ${EASING}, top ${DURATION_IN} ${EASING};
+      transition: color ${DURATION_IN} ${EASING}, top ${DURATION_IN} ${EASING}, background ${DURATION_IN} ${EASING}, border-color ${DURATION_IN} ${EASING};
     `;
     document.body.appendChild(caption);
 
@@ -124,14 +136,16 @@
       clone.style.top       = newT + 'px';
       clone.style.width     = newW + 'px';
       clone.style.height    = newH + 'px';
-      clone.style.boxShadow = GLOW;
+      clone.style.boxShadow = 'none';
       backdrop.style.background = 'rgba(0,0,0,0.55)';
       backdrop.style.pointerEvents = 'auto';
 
       // Position caption just below the zoomed image and fade it in
       const capTop = newT + newH + 14;
-      caption.style.top   = capTop + 'px';
-      caption.style.color = 'rgba(172,172,172,1)';
+      caption.style.top        = capTop + 'px';
+      caption.style.color      = 'rgba(232,232,232,1)';
+      caption.style.background = 'rgba(0,0,0,1)';
+      caption.style.borderColor = `rgba(${GLOW_RGB},0.4)`;
     });
 
     // Close on click (clone or backdrop) or Escape
@@ -177,9 +191,11 @@
 
     // Fade caption out and slide it back down toward the origin
     if (caption) {
-      caption.style.transition = `color ${DURATION_OUT} ${EASING}, top ${DURATION_OUT} ${EASING}`;
-      caption.style.top   = (rect.top + rect.height + 14) + 'px';
-      caption.style.color = 'rgba(172,172,172,0)';
+      caption.style.transition = `color ${DURATION_OUT} ${EASING}, top ${DURATION_OUT} ${EASING}, background ${DURATION_OUT} ${EASING}, border-color ${DURATION_OUT} ${EASING}`;
+      caption.style.top        = (rect.top + rect.height + 14) + 'px';
+      caption.style.color      = 'rgba(232,232,232,0)';
+      caption.style.background = 'rgba(0,0,0,0)';
+      caption.style.borderColor = `rgba(${GLOW_RGB},0)`;
     }
 
     const ms = parseFloat(DURATION_OUT) * 1000;
@@ -200,7 +216,6 @@
   -------------------------------------------------- */
   const HOVER_IN  = 'transform 0.2s ease, box-shadow 0.2s ease';
   const HOVER_OUT = 'transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s cubic-bezier(0.22,1,0.36,1)';
-  const HOVER_GLOW = '0 0 0 1px rgba(255,255,255,0.18), 0 0 18px 4px rgba(255,255,255,0.07)';
 
   function setup() {
     document.querySelectorAll('main img').forEach(img => {
@@ -208,9 +223,12 @@
       img.style.display = 'block';
 
       img.addEventListener('mouseenter', () => {
-        // Lift overflow:hidden on parent so scale doesn't get clipped
+        // Lift overflow:hidden on parent so scale doesn't get clipped —
+        // but only when the image is the sole occupant of its frame.
+        // Cards that also hold a caption (e.g. .viz-card-label) must keep
+        // clipping, otherwise the scaled image bleeds over that text.
         const parent = img.parentElement;
-        if (parent) {
+        if (parent && parent.children.length === 1) {
           parent._prevOverflow = parent.style.overflow;
           parent._prevZIndex   = parent.style.zIndex;
           parent.style.overflow = 'visible';
@@ -218,7 +236,7 @@
         }
         img.style.transition = HOVER_IN;
         img.style.transform  = 'scale(1.03)';
-        img.style.boxShadow  = HOVER_GLOW;
+        img.style.boxShadow  = getHoverGlow();
       });
       img.addEventListener('mouseleave', () => {
         const parent = img.parentElement;

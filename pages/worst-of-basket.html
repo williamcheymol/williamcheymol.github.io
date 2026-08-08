@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}try{var n=performance.getEntriesByType("navigation")[0];var r=n?n.type==="reload":(performance.navigation&&performance.navigation.type===1);if(r){if("scrollRestoration" in history){history.scrollRestoration="manual";}window.scrollTo(0,0);}}catch(e){}})();</script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Worst-Of Basket Note · William Cheymol</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <title>Worst-Of Basket Note · cheymol.io</title>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
   <link rel="stylesheet" href="../style.css"/>
   <link rel="icon" type="image/png" href="../assets/images/Avatar.png"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
@@ -36,7 +38,7 @@
       font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
       padding: 5px 14px; border-radius: 2px;
     }
-    .meta-grade { color: #00e676; border: 1px solid rgba(0,230,118,0.25); }
+    .meta-grade { color: var(--accent); border: 1px solid rgba(0,230,118,0.25); }
     .meta-year  { color: var(--muted2); border: 1px solid var(--border); }
     .meta-field { color: var(--accent2); border: 1px solid rgba(0,176,255,0.25); }
 
@@ -63,6 +65,7 @@
     .formula-box .formula-desc { font-size: 13px; color: var(--muted); line-height: 1.75; margin-top: 16px; }
 
     .img-frame { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; background: #080808; }
+    [data-theme="light"] .img-frame { background: #ffffff; }
     .img-frame img { width: 100%; display: block; }
     .img-caption { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; margin-top: 8px; text-align: center; }
 
@@ -82,15 +85,19 @@
 </head>
 <body>
   <div class="grid-bg"></div>
+  <div id="page-transition"></div>
 
   <nav>
     <a href="../index.html" class="logo">cheymol<span>.io</span></a>
+    <div class="nav-right">
     <div class="links">
-      <a href="../index.html">profile</a>
+      <a href="../index.html" class="nav-home" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 9.5V19a1 1 0 0 0 1 1H9.5v-6h5v6H17.5a1 1 0 0 0 1-1V9.5"/></svg></a>
       <a href="finance.html" class="active">finance</a>
       <a href="tech.html">tech</a>
-      <a href="events.html">events</a>
+      <a href="hackathon-projects.html">hackathons</a>
       <a href="loop.html">loop</a>
+    </div>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" type="button"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
     </div>
   </nav>
 
@@ -242,5 +249,6 @@
     })();
   </script>
   <script src="../gallery.js"></script>
+  <script src="../assets/site.js"></script>
 </body>
 </html>

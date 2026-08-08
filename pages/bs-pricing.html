@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}try{var n=performance.getEntriesByType("navigation")[0];var r=n?n.type==="reload":(performance.navigation&&performance.navigation.type===1);if(r){if("scrollRestoration" in history){history.scrollRestoration="manual";}window.scrollTo(0,0);}}catch(e){}})();</script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Black-Scholes PDE Pricer · William Cheymol</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <title>Black-Scholes PDE Pricer · cheymol.io</title>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
   <link rel="stylesheet" href="../style.css"/>
   <link rel="icon" type="image/png" href="../assets/images/Avatar.png"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
@@ -17,6 +19,8 @@
       ]
     });"></script>
   <style>
+    :root { --amber: #ffd54f; }
+    [data-theme="light"] { --amber: #9a5b00; }
     .page-hero { padding: 120px 0 60px; position: relative; }
     .page-hero .back {
       font-family: var(--font-mono); font-size: 13px;
@@ -85,7 +89,7 @@
     }
     .greeks-table td:first-child { color: var(--text); font-weight: 500; }
     .greeks-table .cost-free    { color: var(--accent); }
-    .greeks-table .cost-reprice { color: #ffd54f; }
+    .greeks-table .cost-reprice { color: var(--amber); }
 
     /* Exotic cards */
     .exotic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 64px; }
@@ -103,23 +107,17 @@
     /* Visualizer screenshot grid — 3 columns, compact */
     .viz-grid {
       display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 14px; margin-bottom: 64px;
+      gap: 14px 14px; margin-bottom: 64px;
     }
-    .viz-card {
-      border: 1px solid var(--border); border-radius: 2px; overflow: hidden;
+    .img-frame {
+      border: 1px solid var(--border); border-radius: 4px; overflow: hidden;
       background: #0a0a0a;
     }
-    .viz-card img { width: 100%; display: block; }
-    .viz-card-label {
-      padding: 12px 16px; border-top: 1px solid var(--border);
-      display: flex; gap: 10px; align-items: baseline;
-    }
-    .viz-card-label .mode-num {
-      font-family: var(--font-mono); font-size: 10px; color: var(--accent);
-      letter-spacing: 0.1em; flex-shrink: 0;
-    }
-    .viz-card-label .mode-name {
-      font-size: 12px; color: var(--muted2); line-height: 1.5;
+    [data-theme="light"] .img-frame { background: #ffffff; }
+    .img-frame img { width: 100%; display: block; }
+    .img-caption {
+      font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+      letter-spacing: 0.08em; margin-top: 8px; text-align: center;
     }
 
     /* Main results */
@@ -149,15 +147,19 @@
 </head>
 <body>
   <div class="grid-bg"></div>
+  <div id="page-transition"></div>
 
   <nav>
     <a href="../index.html" class="logo">cheymol<span>.io</span></a>
+    <div class="nav-right">
     <div class="links">
-      <a href="../index.html">profile</a>
+      <a href="../index.html" class="nav-home" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 9.5V19a1 1 0 0 0 1 1H9.5v-6h5v6H17.5a1 1 0 0 0 1-1V9.5"/></svg></a>
       <a href="finance.html" class="active">finance</a>
       <a href="tech.html">tech</a>
-      <a href="events.html">events</a>
+      <a href="hackathon-projects.html">hackathons</a>
       <a href="loop.html">loop</a>
+    </div>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" type="button"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
     </div>
   </nav>
 
@@ -324,47 +326,29 @@
       </div>
 
       <div class="viz-grid">
-        <div class="viz-card">
-          <img src="../assets/bspricing/E_Call.png" alt="European Call"/>
-          <div class="viz-card-label">
-            <span class="mode-num">MODE 1</span>
-            <span class="mode-name">European Call — CN vs analytical BS</span>
-          </div>
+        <div>
+          <div class="img-frame"><img src="../assets/bspricing/E_Call.png" alt="European Call"/></div>
+          <p class="img-caption">MODE 1 — European Call — CN vs analytical BS</p>
         </div>
-        <div class="viz-card">
-          <img src="../assets/bspricing/E_Put.png" alt="European Put"/>
-          <div class="viz-card-label">
-            <span class="mode-num">MODE 2</span>
-            <span class="mode-name">European Put — hover tooltip with exact error</span>
-          </div>
+        <div>
+          <div class="img-frame"><img src="../assets/bspricing/E_Put.png" alt="European Put"/></div>
+          <p class="img-caption">MODE 2 — European Put — hover tooltip with exact error</p>
         </div>
-        <div class="viz-card">
-          <img src="../assets/bspricing/Digital.png" alt="Digital options"/>
-          <div class="viz-card-label">
-            <span class="mode-num">MODE 3</span>
-            <span class="mode-name">Digital Call &amp; Put — put-call parity</span>
-          </div>
+        <div>
+          <div class="img-frame"><img src="../assets/bspricing/Digital.png" alt="Digital options"/></div>
+          <p class="img-caption">MODE 3 — Digital Call &amp; Put — put-call parity</p>
         </div>
-        <div class="viz-card">
-          <img src="../assets/bspricing/A_Put.png" alt="American Put"/>
-          <div class="viz-card-label">
-            <span class="mode-num">MODE 4</span>
-            <span class="mode-name">American vs European Put — early-exercise premium</span>
-          </div>
+        <div>
+          <div class="img-frame"><img src="../assets/bspricing/A_Put.png" alt="American Put"/></div>
+          <p class="img-caption">MODE 4 — American vs European Put — early-exercise premium</p>
         </div>
-        <div class="viz-card">
-          <img src="../assets/bspricing/UOC.png" alt="Up-and-Out Call"/>
-          <div class="viz-card-label">
-            <span class="mode-num">MODE 5</span>
-            <span class="mode-name">Up-and-Out Call — barrier smile shape</span>
-          </div>
+        <div>
+          <div class="img-frame"><img src="../assets/bspricing/UOC.png" alt="Up-and-Out Call"/></div>
+          <p class="img-caption">MODE 5 — Up-and-Out Call — barrier smile shape</p>
         </div>
-        <div class="viz-card">
-          <img src="../assets/bspricing/DOP.png" alt="Down-and-Out Put"/>
-          <div class="viz-card-label">
-            <span class="mode-num">MODE 6</span>
-            <span class="mode-name">Down-and-Out Put — knock-out corridor</span>
-          </div>
+        <div>
+          <div class="img-frame"><img src="../assets/bspricing/DOP.png" alt="Down-and-Out Put"/></div>
+          <p class="img-caption">MODE 6 — Down-and-Out Put — knock-out corridor</p>
         </div>
       </div>
 
@@ -385,26 +369,26 @@
           <tr>
             <td>EU Call — ATM price</td>
             <td>10.387</td>
-            <td style="color:#80cbc4">10.451</td>
-            <td style="color:#ffd54f">0.064</td>
+            <td style="color:var(--accent2)">10.451</td>
+            <td style="color:var(--amber)">0.064</td>
           </tr>
           <tr>
             <td>EU Put — ATM price</td>
             <td>5.610</td>
-            <td style="color:#80cbc4">5.574</td>
-            <td style="color:#ffd54f">0.036</td>
+            <td style="color:var(--accent2)">5.574</td>
+            <td style="color:var(--amber)">0.036</td>
           </tr>
           <tr>
             <td>Delta — ATM</td>
             <td>0.635</td>
-            <td style="color:#80cbc4">0.637</td>
-            <td style="color:#ffd54f">0.002</td>
+            <td style="color:var(--accent2)">0.637</td>
+            <td style="color:var(--amber)">0.002</td>
           </tr>
           <tr>
             <td>Gamma — ATM</td>
             <td>0.01881</td>
-            <td style="color:#80cbc4">0.01876</td>
-            <td style="color:#ffd54f">0.00005</td>
+            <td style="color:var(--accent2)">0.01876</td>
+            <td style="color:var(--amber)">0.00005</td>
           </tr>
         </tbody>
       </table>
@@ -433,25 +417,29 @@
 
       <!-- ROADMAP -->
       <div class="section-label"><span>ROADMAP</span></div>
-      <div class="two-col" style="margin-bottom: 64px;">
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-          <div style="padding: 24px 28px; border: 1px solid rgba(0,230,118,0.2); border-radius: 2px; background: rgba(0,230,118,0.02);">
-            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 1 — DONE</div>
-            <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">Two finite-difference schemes (Crank-Nicolson + ReducedCN in log-space) solving the BS PDE on a $(S, t)$ grid. Full Greeks (Δ, Γ, θ, ν, ρ) via spatial FD, PDE identity, and bump-and-reprice. Benchmarked against closed-form analytical formulas.</p>
-          </div>
-          <div style="padding: 24px 28px; border: 1px solid rgba(0,230,118,0.2); border-radius: 2px; background: rgba(0,230,118,0.02);">
-            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 2 — DONE</div>
-            <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">Four exotic payoffs: Digital Call &amp; Put with Gibbs smoothing, American Put with early-exercise projection, Up-and-Out Call and Down-and-Out Put with knock-out boundary conditions.</p>
-          </div>
-          <div style="padding: 24px 28px; border: 1px solid rgba(0,230,118,0.2); border-radius: 2px; background: rgba(0,230,118,0.02);">
-            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 3 — DONE</div>
-            <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">SDL2 real-time visualizer with 6 display modes, live parameter controls, mouse hover crosshair, and solver toggle (CN ↔ ReducedCN). Dirty-flag architecture separates PDE solve from rendering.</p>
-          </div>
-          <div style="padding: 24px 28px; border: 1px solid var(--border); border-radius: 2px; opacity: 0.55;">
-            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 4 — NEXT</div>
-            <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">Real market data — implied vol extraction, volatility smile &amp; surface construction, model validation vs live quotes, Dupire local-vol calibration. On hold pending a market data fetcher project.</p>
-          </div>
+      <div class="roadmap-grid" style="margin-bottom: 32px;">
+        <div style="padding: 24px 28px; border: 1px solid rgba(0,230,118,0.2); border-radius: 2px; background: rgba(0,230,118,0.02);">
+          <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 1 — DONE</div>
+          <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">Two finite-difference schemes (Crank-Nicolson + ReducedCN in log-space) solving the BS PDE on a $(S, t)$ grid. Full Greeks (Δ, Γ, θ, ν, ρ) via spatial FD, PDE identity, and bump-and-reprice. Benchmarked against closed-form analytical formulas.</p>
         </div>
+        <div style="padding: 24px 28px; border: 1px solid rgba(0,230,118,0.2); border-radius: 2px; background: rgba(0,230,118,0.02);">
+          <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 2 — DONE</div>
+          <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">Four exotic payoffs: Digital Call &amp; Put with Gibbs smoothing, American Put with early-exercise projection, Up-and-Out Call and Down-and-Out Put with knock-out boundary conditions.</p>
+        </div>
+        <div style="padding: 24px 28px; border: 1px solid rgba(0,230,118,0.2); border-radius: 2px; background: rgba(0,230,118,0.02);">
+          <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 3 — DONE</div>
+          <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">SDL2 real-time visualizer with 6 display modes, live parameter controls, mouse hover crosshair, and solver toggle (CN ↔ ReducedCN). Dirty-flag architecture separates PDE solve from rendering.</p>
+        </div>
+        <div style="padding: 24px 28px; border: 1px solid var(--border); border-radius: 2px; opacity: 0.55;">
+          <div style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 4 — NEXT</div>
+          <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">Real market data — implied vol extraction, volatility smile &amp; surface construction, model validation vs live quotes, Dupire local-vol calibration. On hold pending a market data fetcher project.</p>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 16px; margin: 8px 0 40px;">
+        <div style="flex: 1; height: 1px; background: var(--border);"></div>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0;"></span>
+        <div style="flex: 1; height: 1px; background: var(--border);"></div>
       </div>
 
       <!-- SOURCE CODE -->
@@ -473,17 +461,41 @@
 
   <script>
     (function(){
-      var sel = '.method-card, .exotic-card, .viz-card, .result-card, .two-col > *, .two-col-wide > *, .formula-box, .greeks-table, .prose';
+      var sel = '.method-card, .exotic-card, .img-frame, .result-card, .two-col > *, .two-col-wide > *, .formula-box, .greeks-table, .prose, .roadmap-grid > *';
       document.querySelectorAll(sel).forEach(function(el){ el.classList.add('reveal'); });
-      document.querySelectorAll('.method-grid, .exotic-grid, .viz-grid, .results-grid').forEach(function(g){
+      document.querySelectorAll('.method-grid, .exotic-grid, .results-grid').forEach(function(g){
         Array.from(g.children).forEach(function(c,i){ c.style.transitionDelay = (i*60)+'ms'; });
       });
-      var io = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
-      }, {threshold:0.06, rootMargin:'0px 0px -28px 0px'});
-      document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+      document.querySelectorAll('.viz-grid').forEach(function(g){
+        Array.from(g.children).forEach(function(c,i){
+          var frame = c.querySelector('.img-frame');
+          if (frame) frame.style.transitionDelay = (i*60)+'ms';
+        });
+      });
+
+      function startObserving(){
+        var io = new IntersectionObserver(function(entries){
+          entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+        }, {threshold:0.06, rootMargin:'0px 0px -28px 0px'});
+        document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+      }
+
+      // KaTeX renders asynchronously (see the auto-render script's onload
+      // callback below) and reflows the whole page once it swaps in the
+      // rendered formulas — on an uncached first visit that reflow can land
+      // *after* the observer above has already been set up, silently
+      // shifting .reveal targets out from under it. Wait for the window
+      // 'load' event (fonts, images and deferred scripts all settled) before
+      // measuring anything, with a short fallback timer in case 'load' has
+      // already fired by the time this runs.
+      if (document.readyState === 'complete') {
+        setTimeout(startObserving, 50);
+      } else {
+        window.addEventListener('load', function(){ setTimeout(startObserving, 50); });
+      }
     })();
   </script>
   <script src="../gallery.js"></script>
+  <script src="../assets/site.js"></script>
 </body>
 </html>
