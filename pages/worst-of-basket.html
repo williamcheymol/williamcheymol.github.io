@@ -106,7 +106,7 @@
       <div class="page-hero-inner">
         <a href="finance.html" class="back">← finance projects</a>
         <div class="meta-row">
-          <span class="meta-badge meta-grade">COMPLETE</span>
+          <span class="meta-badge meta-grade">PHASE 1 COMPLETE</span>
           <span class="meta-badge meta-field">PYTHON</span>
           <span class="meta-badge meta-field">STRUCTURED PRODUCTS</span>
         </div>
@@ -215,6 +215,19 @@
           <div class="result-label">DELTA — S&amp;P 500</div>
           <div class="result-val">2,197</div>
           <div class="result-desc">Most correlated to others → least often the worst</div>
+        </div>
+      </div>
+
+      <!-- ROADMAP -->
+      <div class="section-label"><span>ROADMAP</span></div>
+      <div class="roadmap-grid" style="margin-bottom: 32px;">
+        <div style="padding: 24px 28px; border: 1px solid rgba(0,230,118,0.2); border-radius: 2px; background: rgba(0,230,118,0.02);">
+          <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 1 — DONE</div>
+          <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">Worst-of basket note on S&amp;P 500, Nasdaq and Euro Stoxx. Cholesky-correlated GBM terminal simulation, Monte Carlo price with 95% CI, per-asset Delta via common random numbers, and price-vs-correlation sensitivity.</p>
+        </div>
+        <div style="padding: 24px 28px; border: 1px solid var(--border); border-radius: 2px; opacity: 0.55;">
+          <div style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 8px;">PHASE 2 — SOON</div>
+          <p style="font-size: 14px; color: var(--muted2); line-height: 1.8; margin: 0;">Worst-of autocallable: path-dependent simulation on discrete observation dates, early redemption above the autocall barrier, conditional coupons, and a capital-protection barrier at maturity. Pricing and Deltas reuse the same correlated Monte Carlo engine.</p>
         </div>
       </div>
 

@@ -78,25 +78,6 @@
       font-size: 14px; color: var(--muted2); line-height: 1.75;
     }
 
-    /* Parallels */
-    .parallels-grid {
-      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
-    }
-    .parallel-card {
-      padding: 28px; border: 1px solid var(--border); border-radius: 2px;
-      background: transparent;
-    }
-    .parallel-card .parallel-icon {
-      font-family: var(--font-mono); font-size: 22px;
-      margin-bottom: 14px; display: block;
-    }
-    .parallel-card h4 {
-      font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 10px;
-    }
-    .parallel-card p {
-      font-size: 14px; color: var(--muted2); line-height: 1.8;
-    }
-
     /* Media section */
     .media-placeholder {
       border: 1px dashed var(--border); border-radius: 2px;
@@ -114,7 +95,6 @@
     @media (max-width: 900px) {
       .page-hero { padding: 100px 0 40px; }
       .loop-explain { grid-template-columns: 1fr; gap: 40px; }
-      .parallels-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -200,26 +180,6 @@
         </div>
       </div>
 
-      <!-- Parallels with finance/quant -->
-      <div class="section-label"><span>WHY IT CONNECTS TO QUANT THINKING</span></div>
-      <div class="parallels-grid" style="margin-bottom: 64px;">
-        <div class="parallel-card">
-          <span class="parallel-icon" style="color: var(--accent3);">⌘</span>
-          <h4>Real-time Decision Making</h4>
-          <p>Every loop committed is irreversible. Like a live market — no undo, only forward.</p>
-        </div>
-        <div class="parallel-card">
-          <span class="parallel-icon" style="color: var(--accent3);">≡</span>
-          <h4>Layered Structure</h4>
-          <p>Building a piece layer by layer mirrors constructing a multi-factor model from first principles.</p>
-        </div>
-        <div class="parallel-card">
-          <span class="parallel-icon" style="color: var(--accent3);">∞</span>
-          <h4>Improvised Discipline</h4>
-          <p>Freedom within a strict rhythmic structure — like quantitative intuition within model constraints.</p>
-        </div>
-      </div>
-
       <!-- FBHB Results -->
       <div class="section-label"><span>COMPETITION RESULTS</span></div>
 
@@ -240,6 +200,15 @@
           </div>
           <p style="font-size: 14px; color: var(--muted2); line-height: 1.75;">
             Back-to-back semi-final appearance.
+          </p>
+        </div>
+        <div style="padding: 28px; border: 1px solid var(--border); border-radius: 2px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+            <span style="font-family: var(--font-mono); font-size: 11px; color: var(--accent3); letter-spacing: 0.1em;">FRENCH BEATBOX CHAMPIONSHIP — LOOPSTATION</span>
+            <span style="font-family: var(--font-mono); font-size: 10px; color: var(--amber); border: 1px solid var(--amber); padding: 3px 10px; border-radius: 2px;">QUALIFIED</span>
+          </div>
+          <p style="font-size: 14px; color: var(--muted2); line-height: 1.75;">
+            Qualified for the national championship. Date to be announced.
           </p>
         </div>
       </div>
@@ -265,7 +234,7 @@
         <iframe
           style="position: absolute; inset: 0; width: 100%; height: 100%; border: none;"
           src="https://www.youtube.com/embed/IaG58xX-5gs"
-          title="GBB 2024 Wildcard — William Cheymol"
+          title="GBB 2026 Wildcard — William Cheymol"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen>
         </iframe>
@@ -282,6 +251,36 @@
            style="font-family: var(--font-mono); font-size: 11px; color: var(--muted2); text-decoration: none; letter-spacing: 0.08em; transition: color 0.2s;"
            onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted2)'">
           ↗ swissbeatbox.com
+        </a>
+      </div>
+
+      <!-- French Championship Wildcard -->
+      <div style="margin-top: 64px; margin-bottom: 16px;">
+        <div style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 10px;">
+          <h3 style="font-size: 20px; font-weight: 600; color: var(--text);">French Beatbox Championship — Wildcard</h3>
+          <span style="font-family: var(--font-mono); font-size: 10px; color: var(--accent3); border: 1px solid rgba(255,107,107,0.25); padding: 3px 10px; border-radius: 2px; letter-spacing: 0.1em;">LOOPSTATION CATEGORY</span>
+        </div>
+        <p style="font-size: 15px; color: var(--muted2); line-height: 1.8; max-width: 680px; margin-bottom: 24px;">
+          The wildcard that earned my <strong style="color: var(--text);">qualification</strong> for the French Beatbox Championship.
+        </p>
+      </div>
+
+      <!-- Video embed -->
+      <div style="position: relative; width: 100%; padding-bottom: 56.25%; border: 1px solid rgba(0,230,118,0.15); border-radius: 4px; overflow: hidden; background: var(--bg2);">
+        <iframe
+          style="position: absolute; inset: 0; width: 100%; height: 100%; border: none;"
+          src="https://www.youtube.com/embed/wKeiJUMPuaU"
+          title="French Beatbox Championship Wildcard — William Cheymol"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <div style="margin-top: 16px; display: flex; gap: 12px;">
+        <a href="https://www.youtube.com/watch?v=wKeiJUMPuaU" target="_blank"
+           style="font-family: var(--font-mono); font-size: 11px; color: var(--muted2); text-decoration: none; letter-spacing: 0.08em; transition: color 0.2s;"
+           onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted2)'">
+          ↗ Watch on YouTube
         </a>
       </div>
 
@@ -307,12 +306,8 @@
 
     // Scroll reveal
     (function(){
-      var sel = '.loop-step, .parallel-card, .loop-explain > div, .loop-process';
+      var sel = '.loop-step, .loop-explain > div, .loop-process';
       document.querySelectorAll(sel).forEach(function(el){ el.classList.add('reveal'); });
-      // Stagger parallels
-      document.querySelectorAll('.parallels-grid').forEach(function(g){
-        Array.from(g.children).forEach(function(c,i){ c.style.transitionDelay = (i*80)+'ms'; });
-      });
       // Stagger loop steps
       document.querySelectorAll('.loop-process').forEach(function(g){
         Array.from(g.querySelectorAll('.loop-step')).forEach(function(c,i){ c.style.transitionDelay = (i*60)+'ms'; });
